@@ -19,5 +19,5 @@ RUN mkdir -p /app/data
 EXPOSE 8000
 
 # Run the application
-CMD ["sh", "-c", "python init_data.py && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"]
+CMD ["sh", "-c", "if [ -f init_data.py ]; then python init_data.py; fi && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"]
 
