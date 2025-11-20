@@ -30,11 +30,11 @@ services:
       DATABASE_URL: "sqlite:///./dmt.db"
       SECRET_KEY: "your-secret-key-change-in-production"
       ACCESS_TOKEN_EXPIRE_MINUTES: "30"
-    volumes:
+    # volumes:
       # Mount source code for hot-reload during development
-      - ./dmt_backend:/app
+      # - ./dmt_backend:/app
       # Persist SQLite database
-      - dmt_db_data:/app/data
+      # - dmt_db_data:/app/data
     restart: unless-stopped
     networks:
       - dmt_network
