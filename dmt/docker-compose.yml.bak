@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # Nginx Reverse Proxy - Single entry point
+  nginx:
+    image: nginx:alpine
+    container_name: dmt_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+    networks:
+      - dmt_network
+
+  # Backend API Service (FastAPI + Python)
+  backend:
+    build:
+      context: ./dmt_backend
+      dockerfile: Dockerfile
+    container_name: dmt_backend
+    # No exponemos puertos al host, solo a la red interna
+    expose:
+      - "8000"
+    environment:
+      # Use SQLite by default (no external database required)
+      DATABASE_URL: "sqlite:///./dmt.db"
+      SECRET_KEY: "your-secret-key-change-in-production"
+      ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+    volumes:
+      # Mount source code for hot-reload during development
+      - ./dmt_backend:/app
+      # Persist SQLite database
+      - dmt_db_data:/app/data
+    restart: unless-stopped
+    networks:
+      - dmt_network
+
+  # Frontend Service (PHP)
+  frontend:
+    build:
+      context: ./dmt_frontend
+      dockerfile: Dockerfile
+    container_name: dmt_frontend
+    # No exponemos puertos al host, solo a la red interna
+    expose:
+      - "8080"
+    volumes:
+      # Mount source code for hot-reload during development
+      - ./dmt_frontend:/app
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - dmt_network
+
+# Named volume to persist SQLite database
+volumes:
+  dmt_db_data:
+    driver: local
+
+# Network for service communication
+networks:
+  dmt_network:
+    driver: bridge
