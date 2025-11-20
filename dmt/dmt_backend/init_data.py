@@ -1,168 +1,119 @@
-"""
-Script de inicialización para crear usuarios y datos de ejemplo
-Ejecutar después de levantar docker-compose para poblar la base de datos
-"""
-from sqlmodel import Session, select
-from database import engine
+
+import logging
+from sqlmodel import Session
+from database import engine, init_db
 from models import (
-    User, PartNumber, WorkCenter, Customer, Level, Area,
-    Calibration, InspectionItem, PreparedBy, Disposition, FailureCode
+    User,
+    PartNumber,
+    WorkCenter,
+    Customer,
+    Level,
+    Area,
+    InspectionItem,
+    PreparedBy,
+    ProcessCode,
+    Disposition,
+    FailureCode,
 )
-from auth import get_password_hash
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-def create_sample_users(session: Session):
-    """Crear usuarios de ejemplo para cada rol"""
-    print("Creando usuarios de ejemplo...")
-
-    users_data = [
-        {"employee_number": "ADM001", "full_name": "Admin User", "role": "Admin", "password": "admin123"},
-        {"employee_number": "INS001", "full_name": "Inspector User", "role": "Inspector", "password": "inspector123"},
-        {"employee_number": "OPE001", "full_name": "Operator User", "role": "Operator", "password": "operator123"},
-        {"employee_number": "ENG001", "full_name": "Tech Engineer User", "role": "Tech Engineer", "password": "engineer123"},
-        {"employee_number": "QUA001", "full_name": "Quality Engineer User", "role": "Quality Engineer", "password": "quality123"},
-    ]
-
-    for user_data in users_data:
-        # Verificar si el usuario ya existe
-        statement = select(User).where(User.employee_number == user_data["employee_number"])
-        existing_user = session.exec(statement).first()
-
-        if not existing_user:
-            user = User(
-                employee_number=user_data["employee_number"],
-                full_name=user_data["full_name"],
-                role=user_data["role"],
-                hashed_password=get_password_hash(user_data["password"])
-            )
-            session.add(user)
-            print(f"  - Creado: {user_data['employee_number']} ({user_data['role']}) - Password: {user_data['password']}")
-        else:
-            print(f"  - Ya existe: {user_data['employee_number']}")
-
-    session.commit()
-    print("Usuarios creados exitosamente.\n")
-
-
-def create_sample_entities(session: Session):
-    """Crear datos de ejemplo para los catálogos"""
-    print("Creando datos de ejemplo para catálogos...")
-
-    # Part Numbers
-    part_numbers = [
-        {"item_number": "PN001", "item_name": "Part Number 001"},
-        {"item_number": "PN002", "item_name": "Part Number 002"},
-        {"item_number": "PN003", "item_name": "Part Number 003"},
-    ]
-    create_entities(session, PartNumber, part_numbers, "Part Numbers")
-
-    # Work Centers
-    work_centers = [
-        {"item_number": "WC001", "item_name": "Work Center 001"},
-        {"item_number": "WC002", "item_name": "Work Center 002"},
-    ]
-    create_entities(session, WorkCenter, work_centers, "Work Centers")
-
-    # Customers
-    customers = [
-        {"item_number": "CUS001", "item_name": "Customer A"},
-        {"item_number": "CUS002", "item_name": "Customer B"},
-    ]
-    create_entities(session, Customer, customers, "Customers")
-
-    # Levels
-    levels = [
-        {"item_number": "L1", "item_name": "Level 1"},
-        {"item_number": "L2", "item_name": "Level 2"},
-        {"item_number": "L3", "item_name": "Level 3"},
-    ]
-    create_entities(session, Level, levels, "Levels")
-
-    # Areas
-    areas = [
-        {"item_number": "A001", "item_name": "Area A"},
-        {"item_number": "A002", "item_name": "Area B"},
-    ]
-    create_entities(session, Area, areas, "Areas")
-
-    # Calibrations
-    calibrations = [
-        {"item_number": "CAL001", "item_name": "Calibration Type 1"},
-        {"item_number": "CAL002", "item_name": "Calibration Type 2"},
-    ]
-    create_entities(session, Calibration, calibrations, "Calibrations")
-
-    # Inspection Items
-    inspection_items = [
-        {"item_number": "INS001", "item_name": "Visual Inspection"},
-        {"item_number": "INS002", "item_name": "Dimensional Inspection"},
-    ]
-    create_entities(session, InspectionItem, inspection_items, "Inspection Items")
-
-    # Prepared Bys
-    prepared_bys = [
-        {"item_number": "PRE001", "item_name": "Prepared By A"},
-        {"item_number": "PRE002", "item_name": "Prepared By B"},
-    ]
-    create_entities(session, PreparedBy, prepared_bys, "Prepared Bys")
-
-    # Dispositions
-    dispositions = [
-        {"item_number": "DIS001", "item_name": "Accept"},
-        {"item_number": "DIS002", "item_name": "Reject"},
-        {"item_number": "DIS003", "item_name": "Rework"},
-    ]
-    create_entities(session, Disposition, dispositions, "Dispositions")
-
-    # Failure Codes
-    failure_codes = [
-        {"item_number": "FC001", "item_name": "Material Defect"},
-        {"item_number": "FC002", "item_name": "Process Error"},
-        {"item_number": "FC003", "item_name": "Measurement Error"},
-    ]
-    create_entities(session, FailureCode, failure_codes, "Failure Codes")
-
-    session.commit()
-    print("Catálogos creados exitosamente.\n")
-
-
-def create_entities(session: Session, model, entities_data, entity_name):
-    """Función auxiliar para crear entidades"""
-    print(f"  - {entity_name}:")
-    for entity_data in entities_data:
-        statement = select(model).where(model.item_number == entity_data["item_number"])
-        existing = session.exec(statement).first()
-
-        if not existing:
-            entity = model(**entity_data)
-            session.add(entity)
-            print(f"    * Creado: {entity_data['item_number']} - {entity_data['item_name']}")
-        else:
-            print(f"    * Ya existe: {entity_data['item_number']}")
-
-
-def main():
-    """Función principal de inicialización"""
-    print("\n" + "="*60)
-    print("SCRIPT DE INICIALIZACIÓN DE DATOS")
-    print("="*60 + "\n")
-
+def create_initial_data():
+    """
+    Create initial data for the database if it's empty.
+    """
     with Session(engine) as session:
-        create_sample_users(session)
-        create_sample_entities(session)
+        # Check if data already exists
+        if session.query(User).first():
+            logger.info("Database already contains data. Skipping initialization.")
+            return
 
-    print("="*60)
-    print("INICIALIZACIÓN COMPLETADA")
-    print("="*60)
-    print("\nCredenciales de usuarios:")
-    print("  Admin:            ADM001 / admin123")
-    print("  Inspector:        INS001 / inspector123")
-    print("  Operator:         OPE001 / operator123")
-    print("  Tech Engineer:    ENG001 / engineer123")
-    print("  Quality Engineer: QUA001 / quality123")
-    print("\nPuedes usar estos usuarios para autenticarte en /auth/token")
-    print("="*60 + "\n")
+        logger.info("Creating initial data...")
 
+        # Create Users
+        users = [
+            User(employee_number="EMP001", full_name="John Doe", role="admin", hashed_password="hashed_password_1"),
+            User(employee_number="EMP002", full_name="Jane Smith", role="user", hashed_password="hashed_password_2"),
+        ]
+        session.add_all(users)
+
+        # Create Part Numbers
+        part_numbers = [
+            PartNumber(item_number="PN001", item_name="Part Number 1"),
+            PartNumber(item_number="PN002", item_name="Part Number 2"),
+        ]
+        session.add_all(part_numbers)
+
+        # Create Work Centers
+        work_centers = [
+            WorkCenter(item_number="WC001", item_name="Work Center 1"),
+            WorkCenter(item_number="WC002", item_name="Work Center 2"),
+        ]
+        session.add_all(work_centers)
+
+        # Create Customers
+        customers = [
+            Customer(item_number="CUST001", item_name="Customer 1"),
+            Customer(item_number="CUST002", item_name="Customer 2"),
+        ]
+        session.add_all(customers)
+
+        # Create Levels
+        levels = [
+            Level(item_number="LVL001", item_name="Level 1"),
+            Level(item_number="LVL002", item_name="Level 2"),
+        ]
+        session.add_all(levels)
+
+        # Create Areas
+        areas = [
+            Area(item_number="AREA001", item_name="Area 1"),
+            Area(item_number="AREA002", item_name="Area 2"),
+        ]
+        session.add_all(areas)
+
+        # Create Inspection Items
+        inspection_items = [
+            InspectionItem(item_number="II001", item_name="Inspection Item 1"),
+            InspectionItem(item_number="II002", item_name="Inspection Item 2"),
+        ]
+        session.add_all(inspection_items)
+
+        # Create Prepared By
+        prepared_by = [
+            PreparedBy(item_number="PB001", item_name="Prepared By 1"),
+            PreparedBy(item_number="PB002", item_name="Prepared By 2"),
+        ]
+        session.add_all(prepared_by)
+
+        # Create Process Codes
+        process_codes = [
+            ProcessCode(item_number="PC001", item_name="Process Code 1"),
+            ProcessCode(item_number="PC002", item_name="Process Code 2"),
+        ]
+        session.add_all(process_codes)
+
+        # Create Dispositions
+        dispositions = [
+            Disposition(item_number="DISP001", item_name="Disposition 1"),
+            Disposition(item_number="DISP002", item_name="Disposition 2"),
+        ]
+        session.add_all(dispositions)
+
+        # Create Failure Codes
+        failure_codes = [
+            FailureCode(item_number="FC001", item_name="Failure Code 1"),
+            FailureCode(item_number="FC002", item_name="Failure Code 2"),
+        ]
+        session.add_all(failure_codes)
+
+        session.commit()
+        logger.info("Initial data created successfully.")
 
 if __name__ == "__main__":
-    main()
+    logger.info("Initializing database...")
+    init_db()
+    create_initial_data()
+    logger.info("Database initialization complete.")
