@@ -1,0 +1,20 @@
+{
+  "name": "dmt_frontend",
+  "version": "1.0.0",
+  "description": "Frontend application for the Defect Management & Tracking (DMT) system built with PHP, Vanilla JavaScript, and Tailwind CSS.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tailwindcss -i ./css/input.css -o ./css/output.css",
+    "watch": "tailwindcss -i ./css/input.css -o ./css/output.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.17",
+    "tailwindcss": "^4.1.17"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0"
+  }
+}

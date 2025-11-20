@@ -1,0 +1,31 @@
+services:
+  db:
+    image: mariadb:10.6
+    container_name: dmt_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret_password
+      MYSQL_DATABASE: dmt_db
+      MYSQL_USER: dmt_user
+      MYSQL_PASSWORD: dmt_user_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - dmt_data:/var/lib/mysql
+
+  api:
+    build: .
+    container_name: dmt_api
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "mariadb+mariadbconnector://dmt_user:dmt_user_password@db:3306/dmt_db"
+      SECRET_KEY: "your-secret-key-change-in-production-please-use-random-secure-key"
+      ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
+
+volumes:
+  dmt_data:

@@ -1,0 +1,504 @@
+/**
+ * Print Styles for DMT System
+ * Handles three print formats: DMT, CAR, and MRB
+ */
+
+/* ============================================
+   COMMON PRINT STYLES (All formats)
+   ============================================ */
+@media print {
+    /* Hide optional fields completely in print */
+    .optional-field {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    /* Hide page breaks and navigation */
+    body.print-dmt nav,
+    body.print-dmt footer,
+    body.print-car nav,
+    body.print-car footer,
+    body.print-mrb nav,
+    body.print-mrb footer,
+    #print-buttons-section {
+        display: none !important;
+    }
+
+    @page {
+        size: letter portrait;
+        margin: 0.5in;
+    }
+
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+    }
+
+    /* Common label styles */
+    label {
+        font-size: 8px !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        margin-bottom: 2px !important;
+        display: block !important;
+    }
+
+    /* Common input styles */
+    input, select {
+        font-size: 10px !important;
+        padding: 2px !important;
+        border: none !important;
+        border-bottom: 1px solid #333 !important;
+        width: 100% !important;
+        background: transparent !important;
+    }
+
+    textarea {
+        font-size: 10px !important;
+        padding: 3px !important;
+        border: 1px solid #333 !important;
+        width: 100% !important;
+        background: transparent !important;
+    }
+
+    /* Hide helper text */
+    p, span.text-sm, span.text-xs {
+        display: none !important;
+    }
+
+    /* Hide buttons */
+    button {
+        display: none !important;
+    }
+}
+
+/* ============================================
+   DMT PRINT STYLES - F19.00-09
+   Defective Material Tag
+   ============================================ */
+@media print {
+    body.print-dmt * {
+        visibility: hidden;
+    }
+
+    /* Show new print content */
+    body.print-dmt #dmt-print-content,
+    body.print-dmt #dmt-print-content * {
+        visibility: visible !important;
+    }
+
+    body.print-dmt #dmt-print-content {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+    }
+
+    body.print-dmt h2, body.print-dmt h3 {
+        display: none !important;
+    }
+
+    /* Section 1: General Info - Compact Grid */
+    body.print-dmt .bg-gradient-to-br.from-blue-50 {
+        visibility: visible !important;
+        margin-bottom: 8px !important;
+    }
+
+    body.print-dmt .bg-gradient-to-br.from-blue-50 .grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 0 !important;
+        border: 2px solid #000;
+    }
+
+    body.print-dmt .bg-gradient-to-br.from-blue-50 .grid > div {
+        border: 1px solid #333;
+        padding: 3px 5px !important;
+    }
+
+    /* Defect Description - Bilingual (Spanish | Chinese) */
+    body.print-dmt #defect_description_container {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+        border: 2px solid #000 !important;
+        padding: 8px !important;
+        margin-bottom: 10px !important;
+        visibility: visible !important;
+    }
+
+    body.print-dmt .bilingual-field {
+        padding: 5px !important;
+        border: 1px solid #666 !important;
+        min-height: 60px !important;
+    }
+
+    body.print-dmt .bilingual-label {
+        font-size: 9px !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        margin-bottom: 3px !important;
+        display: block !important;
+        color: #333 !important;
+    }
+
+    body.print-dmt .bilingual-text {
+        font-size: 10px !important;
+        line-height: 1.4 !important;
+        white-space: pre-wrap !important;
+    }
+
+    /* Single Language Container (new) */
+    body.print-dmt .language-container {
+        border: 2px solid #000 !important;
+        padding: 8px !important;
+        margin-bottom: 10px !important;
+        visibility: visible !important;
+    }
+
+    body.print-dmt .language-field {
+        padding: 5px !important;
+        border: 1px solid #666 !important;
+        min-height: 60px !important;
+    }
+
+    body.print-dmt .language-label {
+        font-size: 9px !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        margin-bottom: 3px !important;
+        display: block !important;
+        color: #333 !important;
+    }
+
+    body.print-dmt .language-text {
+        font-size: 10px !important;
+        line-height: 1.4 !important;
+        white-space: pre-wrap !important;
+    }
+
+    /* Engineering Section */
+    body.print-dmt .bg-gradient-to-br.from-green-50 {
+        visibility: visible !important;
+        margin-bottom: 8px !important;
+    }
+
+    /* Hide Process Analysis and Quality sections in DMT print */
+    body.print-dmt .bg-gradient-to-br.from-yellow-50,
+    body.print-dmt .bg-gradient-to-br.from-cyan-50,
+    body.print-dmt .bg-gradient-to-br.from-purple-50,
+    body.print-dmt .bg-gradient-to-br.from-red-50 {
+        display: none !important;
+    }
+
+    /* Signature Block */
+    body.print-dmt #dmt-form::after {
+        content: "Engineer Sign: ______________________ Date: ________        Quality Sign: ______________________ Date: ________";
+        display: block !important;
+        margin-top: 20px !important;
+        border: 2px solid #000 !important;
+        padding: 15px !important;
+        font-size: 10px !important;
+        font-weight: bold !important;
+        text-align: center !important;
+        visibility: visible !important;
+    }
+}
+
+/* ============================================
+   CAR PRINT STYLES
+   Corrective Action Request
+   ============================================ */
+@media print {
+    body.print-car * {
+        visibility: hidden;
+    }
+
+    body.print-car #dmt-form,
+    body.print-car #dmt-form * {
+        visibility: visible;
+    }
+
+    body.print-car .bg-white.rounded-xl.shadow-xl {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        box-shadow: none !important;
+        padding: 20px !important;
+        background: white !important;
+    }
+
+    /* CAR Header with Report Number */
+    body.print-car #dmt-form::before {
+        content: "CORRECTIVE ACTION REQUEST (CAR)\A Report No: " attr(data-report-number);
+        white-space: pre-wrap !important;
+        display: block !important;
+        text-align: center !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        border-bottom: 3px solid #000 !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 12px !important;
+        visibility: visible !important;
+    }
+
+    body.print-car h2, body.print-car h3 {
+        display: none !important;
+    }
+
+    /* Show CAR header info */
+    body.print-car #car-header-info {
+        display: block !important;
+        visibility: visible !important;
+        font-size: 10px !important;
+        line-height: 1.8 !important;
+        margin-bottom: 15px !important;
+        border: 2px solid #000 !important;
+        padding: 8px !important;
+    }
+
+    /* Hide all sections except Defect Description */
+    body.print-car .bg-gradient-to-br.from-blue-50,
+    body.print-car .bg-gradient-to-br.from-yellow-50,
+    body.print-car .bg-gradient-to-br.from-green-50,
+    body.print-car .bg-gradient-to-br.from-cyan-50,
+    body.print-car .bg-gradient-to-br.from-purple-50 {
+        display: none !important;
+    }
+
+    /* Show Defect Description (Section 2) */
+    body.print-car .bg-gradient-to-br.from-red-50 {
+        display: block !important;
+        visibility: visible !important;
+        border: 2px solid #000 !important;
+        padding: 0 !important;
+        margin-bottom: 12px !important;
+        background: white !important;
+    }
+
+    /* Bilingual Defect Description for CAR */
+    body.print-car #defect_description_container {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+        border: 2px solid #000 !important;
+        padding: 8px !important;
+        visibility: visible !important;
+    }
+
+    body.print-car .bilingual-field {
+        padding: 5px !important;
+        border: 1px solid #666 !important;
+        min-height: 40px !important;
+    }
+
+    body.print-car .bilingual-label {
+        font-size: 9px !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        margin-bottom: 3px !important;
+        display: block !important;
+        color: #333 !important;
+    }
+
+    body.print-car .bilingual-text {
+        font-size: 10px !important;
+        line-height: 1.4 !important;
+        white-space: pre-wrap !important;
+    }
+
+    /* Single Language Container for CAR (new) */
+    body.print-car .language-container {
+        border: 2px solid #000 !important;
+        padding: 8px !important;
+        visibility: visible !important;
+    }
+
+    body.print-car .language-field {
+        padding: 5px !important;
+        border: 1px solid #666 !important;
+        min-height: 40px !important;
+    }
+
+    body.print-car .language-label {
+        font-size: 9px !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        margin-bottom: 3px !important;
+        display: block !important;
+        color: #333 !important;
+    }
+
+    body.print-car .language-text {
+        font-size: 10px !important;
+        line-height: 1.4 !important;
+        white-space: pre-wrap !important;
+    }
+
+    /* Show CAR footer content */
+    body.print-car #car-footer-info {
+        display: block !important;
+        visibility: visible !important;
+        white-space: pre-wrap !important;
+        font-size: 10px !important;
+        line-height: 1.8 !important;
+        border: 2px solid #000 !important;
+        padding: 10px !important;
+        margin-top: 10px !important;
+    }
+
+    body.print-car label {
+        display: none !important;
+    }
+}
+
+/* ============================================
+   MRB PRINT STYLES - F19.00-09
+   Material Review Board Report
+   ============================================ */
+@media print {
+    body.print-mrb * {
+        visibility: hidden;
+    }
+
+    body.print-mrb #dmt-form,
+    body.print-mrb #dmt-form * {
+        visibility: visible;
+    }
+
+    body.print-mrb .bg-white.rounded-xl.shadow-xl {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        box-shadow: none !important;
+        padding: 20px !important;
+        background: white !important;
+    }
+
+    /* MRB Header with Report Number */
+    body.print-mrb #dmt-form::before {
+        content: "MATERIAL REVIEW BOARD (MRB) REPORT\A Report No: " attr(data-report-number) "\A Form No: F19.00-09";
+        white-space: pre-wrap !important;
+        display: block !important;
+        text-align: center !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        border-bottom: 3px solid #000 !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 15px !important;
+        visibility: visible !important;
+    }
+
+    body.print-mrb h2, body.print-mrb h3 {
+        display: none !important;
+    }
+
+    /* Hide Process Analysis and Assignment sections */
+    body.print-mrb .bg-gradient-to-br.from-yellow-50,
+    body.print-mrb .bg-gradient-to-br.from-cyan-50,
+    body.print-mrb .bg-gradient-to-br.from-purple-50 {
+        display: none !important;
+    }
+
+    /* Show General Info */
+    body.print-mrb .bg-gradient-to-br.from-blue-50,
+    body.print-mrb .bg-gradient-to-br.from-red-50,
+    body.print-mrb .bg-gradient-to-br.from-green-50 {
+        display: block !important;
+        visibility: visible !important;
+        border: 2px solid #000 !important;
+        padding: 8px !important;
+        margin-bottom: 10px !important;
+        background: white !important;
+    }
+
+    /* Show MRB cost section */
+    body.print-mrb #mrb-cost-section {
+        display: block !important;
+        visibility: visible !important;
+    }
+
+    /* Bilingual text fields for MRB */
+    body.print-mrb .bilingual-container {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+        border: 2px solid #000 !important;
+        padding: 8px !important;
+        margin-bottom: 10px !important;
+        visibility: visible !important;
+    }
+
+    body.print-mrb .bilingual-field {
+        padding: 5px !important;
+        border: 1px solid #666 !important;
+        min-height: 50px !important;
+    }
+
+    body.print-mrb .bilingual-label {
+        font-size: 9px !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        margin-bottom: 3px !important;
+        display: block !important;
+        color: #333 !important;
+    }
+
+    body.print-mrb .bilingual-text {
+        font-size: 10px !important;
+        line-height: 1.4 !important;
+        white-space: pre-wrap !important;
+    }
+
+    /* Single Language Container for MRB (new) */
+    body.print-mrb .language-container {
+        border: 2px solid #000 !important;
+        padding: 8px !important;
+        margin-bottom: 10px !important;
+        visibility: visible !important;
+    }
+
+    body.print-mrb .language-field {
+        padding: 5px !important;
+        border: 1px solid #666 !important;
+        min-height: 50px !important;
+    }
+
+    body.print-mrb .language-label {
+        font-size: 9px !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        margin-bottom: 3px !important;
+        display: block !important;
+        color: #333 !important;
+    }
+
+    body.print-mrb .language-text {
+        font-size: 10px !important;
+        line-height: 1.4 !important;
+        white-space: pre-wrap !important;
+    }
+
+    /* MRB Footer Signatures */
+    body.print-mrb #dmt-form::after {
+        content: "Mechanical Engineer (ME): _________________________    Date: __________\A\AQuality Engineer (QE): _________________________    Date: __________\A\AQuality Manager (QM): _________________________    Date: __________\A\AEngineering Manager: _________________________    Date: __________\A\AProduction Manager: _________________________    Date: __________";
+        display: block !important;
+        white-space: pre-wrap !important;
+        border-top: 2px solid #000 !important;
+        padding-top: 10px !important;
+        margin-top: 15px !important;
+        font-size: 10px !important;
+        font-weight: bold !important;
+        line-height: 1.8 !important;
+        visibility: visible !important;
+    }
+
+    body.print-mrb input[type="checkbox"] {
+        width: 15px !important;
+        height: 15px !important;
+        margin-right: 5px !important;
+    }
+}

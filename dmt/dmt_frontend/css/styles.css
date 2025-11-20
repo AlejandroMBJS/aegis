@@ -1,0 +1,9 @@
+body {
+    background-image: linear-gradient(to bottom right, #3b82f6, #1d4ed8);
+    
+    /* Tamaño y Distribución */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;background-color: #f5f5f5;
+}

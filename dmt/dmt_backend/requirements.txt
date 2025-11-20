@@ -1,0 +1,36 @@
+# Core Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Database ORM (SQLModel includes SQLAlchemy)
+sqlmodel==0.0.14
+
+# Database Drivers
+# Note: Only install the driver for the database you're using
+# SQLite: Built-in with Python, no additional package needed
+
+# MySQL/MariaDB (optional - uncomment if using MySQL/MariaDB)
+# pymysql==1.1.0
+
+# MariaDB Connector (optional - alternative to PyMySQL)
+# mariadb==1.1.8
+
+# PostgreSQL (optional - uncomment if using PostgreSQL)
+# psycopg2-binary==2.9.9
+
+# Oracle (optional - uncomment if using Oracle)
+# cx_oracle==8.3.0
+
+# Authentication & Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# File Upload Support
+python-multipart==0.0.6
+
+# Pydantic for validation
+pydantic==2.4.2
+pydantic-settings==2.0.3
+
+# Translation Service (LibreTranslate API)
+requests==2.31.0
