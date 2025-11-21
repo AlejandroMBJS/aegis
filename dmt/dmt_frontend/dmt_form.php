@@ -509,9 +509,7 @@ include 'includes/header.php';
 
 <script>
     window.USER_ROLE = "<?= $_SESSION['user']['role'] ?>";
-</script>
-<script>
-const API_TOKEN = "<?php echo $_SESSION['token'] ?? ''; ?>";
+    window.API_TOKEN = "<?php echo $_SESSION['token'] ?? ''; ?>";
 </script>
 
 <script src="js/i18n.js?v=<?= time() ?>"></script>

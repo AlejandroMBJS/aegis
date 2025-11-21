@@ -2,56 +2,217 @@
 // Using nginx reverse proxy (relative path)
 const API_BASE_URL = '/api';
 
-// ---------------- HELPER FUNCTIONS ----------------
-async function apiGet(url) {
-    const response = await fetch(url, {
-        headers: {
-            "Authorization": `Bearer ${API_TOKEN}`,
+class API {
+    constructor(apiToken) {
+        this.apiToken = apiToken;
+        this.headers = {
+            "Authorization": `Bearer ${this.apiToken}`,
             "Content-Type": "application/json"
+        };
+    }
+
+    async _fetch(url, options) {
+        const response = await fetch(url, { ...options, headers: this.headers });
+        
+        // Handle 401 Unauthorized - token expired or invalid
+        if (response.status === 401) {
+            // Assuming logout() is a global function or accessible
+            if (typeof logout === 'function') {
+                logout();
+            } else {
+                console.error('logout() function not found. Redirecting manually.');
+                window.location.href = 'index.php';
+            }
+            throw new Error('Authentication expired. Please login again.');
         }
-    });
-    if (!response.ok) throw new Error(`API GET error: ${response.status}`);
-    return response.json();
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: `API error: ${response.status}` }));
+            console.error('API Error:', errorData);
+
+            // Handle validation errors better
+            if (response.status === 422 && errorData.detail) {
+                if (Array.isArray(errorData.detail)) {
+                    const errors = errorData.detail.map(err => `${err.loc?.join('.')}: ${err.msg}`).join('\n');
+                    throw new Error(`Validation Error:\n${errors}`);
+                }
+            }
+            throw new Error(errorData.detail || errorData.message || `API error: ${response.status}`);
+        }
+        return response.json();
+    }
+
+    async get(endpoint) {
+        return this._fetch(`${API_BASE_URL}${endpoint}`);
+    }
+
+    async post(endpoint, data) {
+        return this._fetch(`${API_BASE_URL}${endpoint}`, {
+            method: "POST",
+            body: JSON.stringify(data)
+        });
+    }
+
+    async put(endpoint, data) {
+        return this._fetch(`${API_BASE_URL}${endpoint}`, {
+            method: "PUT",
+            body: JSON.stringify(data)
+        });
+    }
+
+    async patch(endpoint, data) {
+        return this._fetch(`${API_BASE_URL}${endpoint}`, {
+            method: "PATCH",
+            body: JSON.stringify(data)
+        });
+    }
+
+    async delete(endpoint) {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            method: "DELETE",
+            headers: this.headers
+        });
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: `API error: ${response.status}` }));
+            throw new Error(errorData.detail || `API error: ${response.status}`);
+        }
+        // DELETE might not return a body, so we don't try to parse JSON if it's empty
+        if (response.status === 204) {
+            return null;
+        }
+        return response.json();
+    }
+
+    // User Management Methods - Using direct fetch to /users/ (not under /api)
+    async getUsers() {
+        const response = await fetch('/users/', { headers: this.headers });
+        if (response.status === 401) {
+            if (typeof logout === 'function') logout();
+            throw new Error('Authentication expired. Please login again.');
+        }
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: `API error: ${response.status}` }));
+            throw new Error(errorData.detail || errorData.message || `API error: ${response.status}`);
+        }
+        return response.json();
+    }
+
+    async getUser(userId) {
+        const response = await fetch(`/users/${userId}`, { headers: this.headers });
+        if (response.status === 401) {
+            if (typeof logout === 'function') logout();
+            throw new Error('Authentication expired. Please login again.');
+        }
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: `API error: ${response.status}` }));
+            throw new Error(errorData.detail || errorData.message || `API error: ${response.status}`);
+        }
+        return response.json();
+    }
+
+    async createUser(userData) {
+        const response = await fetch('/users/', {
+            method: "POST",
+            headers: this.headers,
+            body: JSON.stringify(userData)
+        });
+        if (response.status === 401) {
+            if (typeof logout === 'function') logout();
+            throw new Error('Authentication expired. Please login again.');
+        }
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: `API error: ${response.status}` }));
+            throw new Error(errorData.detail || errorData.message || `API error: ${response.status}`);
+        }
+        return response.json();
+    }
+
+    async updateUser(userId, userData) {
+        const response = await fetch(`/users/${userId}`, {
+            method: "PUT",
+            headers: this.headers,
+            body: JSON.stringify(userData)
+        });
+        if (response.status === 401) {
+            if (typeof logout === 'function') logout();
+            throw new Error('Authentication expired. Please login again.');
+        }
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: `API error: ${response.status}` }));
+            throw new Error(errorData.detail || errorData.message || `API error: ${response.status}`);
+        }
+        return response.json();
+    }
+
+    async deleteUser(userId) {
+        const response = await fetch(`/users/${userId}`, {
+            method: "DELETE",
+            headers: this.headers
+        });
+        if (response.status === 401) {
+            if (typeof logout === 'function') logout();
+            throw new Error('Authentication expired. Please login again.');
+        }
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: `API error: ${response.status}` }));
+            throw new Error(errorData.detail || `API error: ${response.status}`);
+        }
+        if (response.status === 204) {
+            return null;
+        }
+        return response.json();
+    }
+    
+    // Catalog methods
+    async getCatalog(entityName) {
+        return this.get(`/entities/${entityName}`);
+    }
+    
+    // DMT methods
+    async getDmtRecord(recordId) {
+        return this.get(`/dmt/${recordId}`);
+    }
+
+    async createDmtRecord(payload, language) {
+        return this.post(`/dmt/?language=${language}`, payload);
+    }
+
+    async updateDmtRecord(recordId, payload, language) {
+        return this.patch(`/dmt/${recordId}?language=${language}`, payload);
+    }
+}
+
+// This should be initialized in a script tag in the PHP file
+// const api = new API(API_TOKEN);
+
+// ---------------- HELPER FUNCTIONS ----------------
+// The old helper functions are now part of the API class.
+// Keeping old function signatures for compatibility with existing code if needed,
+// but ideally, refactor other files to use the API class instance.
+
+const legacyApi = new API(window.API_TOKEN);
+
+async function apiGet(url) {
+    // Assuming url is the full path for simplicity
+    const endpoint = url.replace(API_BASE_URL, '');
+    return legacyApi.get(endpoint);
 }
 
 async function apiPost(url, data) {
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Authorization": `Bearer ${API_TOKEN}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    });
-    if (!response.ok) throw new Error(`API POST error: ${response.status}`);
-    return response.json();
+    const endpoint = url.replace(API_BASE_URL, '');
+    return legacyApi.post(endpoint, data);
 }
 
 async function apiPut(url, data) {
-    const response = await fetch(url, {
-        method: "PUT",
-        headers: {
-            "Authorization": `Bearer ${API_TOKEN}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    });
-    if (!response.ok) throw new Error(`API PUT error: ${response.status}`);
-    return response.json();
+    const endpoint = url.replace(API_BASE_URL, '');
+    return legacyApi.put(endpoint, data);
 }
 
 async function apiPatch(url, data) {
-    const response = await fetch(url, {
-        method: "PATCH",
-        headers: {
-            "Authorization": `Bearer ${API_TOKEN}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    });
-    if (!response.ok) throw new Error(`API PATCH error: ${response.status}`);
-    return response.json();
+    const endpoint = url.replace(API_BASE_URL, '');
+    return legacyApi.patch(endpoint, data);
 }
+
 
 // ---------------- LANGUAGE ----------------
 
@@ -86,24 +247,9 @@ function initLanguageSelector() {
 
 
 
-// ---------------- DOMContentLoaded ----------------
-document.addEventListener("DOMContentLoaded", async () => {
-    currentUserRole = window.USER_ROLE;
-    currentLanguage = getCurrentLanguage();
-    initLanguageSelector();
-
-    const rid = document.getElementById("record-id").value;
-    isEditMode = rid !== "";
-
-    await loadAllCatalogs();
-
-    if (isEditMode) await loadRecord(rid);
-
-    applyFieldRBAC();
-    applySectionRBAC(currentUserRole);
-
-    setupFormSubmission();
-});
+// Note: DOMContentLoaded initialization has been moved to dmt_form_logic.js
+// to prevent duplicate catalog loading. This file now only provides the API class
+// and helper functions.
 
 // ---------------- LOAD CATALOGS ----------------
 async function loadAllCatalogs() {

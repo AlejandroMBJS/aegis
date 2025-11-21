@@ -5,14 +5,22 @@ from datetime import datetime
 # ===== USER SCHEMAS =====
 
 class UserCreate(BaseModel):
-    employee_number: str
+    username: str
+    email: str
     full_name: str
     role: str  # Admin, Inspector, Tech Engineer, Operator, Quality Engineer
     password: str
 
+class UserUpdate(BaseModel):
+    full_name: Optional[str] = None
+    email: Optional[str] = None
+    role: Optional[str] = None
+    password: Optional[str] = None
+
 class UserRead(BaseModel):
     id: int
-    employee_number: str
+    username: str
+    email: str
     full_name: str
     role: str
 
@@ -20,7 +28,7 @@ class UserRead(BaseModel):
         from_attributes = True
 
 class UserAuth(BaseModel):
-    employee_number: str
+    username: str
     password: str
 
 # ===== TOKEN SCHEMAS =====
@@ -30,7 +38,7 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    employee_number: Optional[str] = None
+    username: Optional[str] = None
 
 # ===== ENTITY SCHEMAS (Generic para todos los catálogos) =====
 

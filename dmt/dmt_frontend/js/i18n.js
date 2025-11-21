@@ -29,7 +29,46 @@ const translations = {
         dashboard: { en: 'Dashboard', es: 'Panel', zh: '仪表板' },
         createRecord: { en: 'Create DMT Record', es: 'Crear Registro DMT', zh: '创建DMT记录' },
         manageCatalogs: { en: 'Manage Catalogs', es: 'Gestionar Catálogos', zh: '管理目录' },
+        manageUsers: { en: 'Manage Users', es: 'Gestionar Usuarios', zh: '管理用户' },
         logout: { en: 'Logout', es: 'Cerrar Sesión', zh: '登出' }
+    },
+
+    // User Management Page
+    manageUsers: {
+        title: { en: 'User Management', es: 'Gestión de Usuarios', zh: '用户管理' },
+        addUser: { en: 'Add New User', es: 'Añadir Nuevo Usuario', zh: '添加新用户' },
+        table: {
+            fullName: { en: 'Full Name', es: 'Nombre Completo', zh: '全名' },
+            username: { en: 'Username', es: 'Nombre de Usuario', zh: '用户名' },
+            email: { en: 'Email', es: 'Correo Electrónico', zh: '电子邮件' },
+            role: { en: 'Role', es: 'Rol', zh: '角色' },
+            actions: { en: 'Actions', es: 'Acciones', zh: '操作' }
+        },
+        modal: {
+            addUserTitle: { en: 'Add New User', es: 'Añadir Nuevo Usuario', zh: '添加新用户' },
+            editUserTitle: { en: 'Edit User', es: 'Editar Usuario', zh: '编辑用户' }
+        },
+        form: {
+            fullName: { en: 'Full Name', es: 'Nombre Completo', zh: '全名' },
+            username: { en: 'Username', es: 'Nombre de Usuario', zh: '用户名' },
+            email: { en: 'Email', es: 'Correo Electrónico', zh: '电子邮件' },
+            role: { en: 'Role', es: 'Rol', zh: '角色' },
+            password: { en: 'Password', es: 'Contraseña', zh: '密码' },
+            passwordHint: { en: 'Leave blank to keep current password.', es: 'Dejar en blanco para mantener la contraseña actual.', zh: '留空以保留当前密码。' }
+        },
+        buttons: {
+            save: { en: 'Save', es: 'Guardar', zh: '保存' },
+            cancel: { en: 'Cancel', es: 'Cancelar', zh: '取消' },
+            edit: { en: 'Edit', es: 'Editar', zh: '编辑' },
+            delete: { en: 'Delete', es: 'Eliminar', zh: '删除' }
+        }
+    },
+
+    // Roles
+    roles: {
+        inspector: { en: 'Inspector', es: 'Inspector', zh: '检查员' },
+        admin: { en: 'Admin', es: 'Administrador', zh: '管理员' },
+        viewer: { en: 'Viewer', es: 'Espectador', zh: '查看者' }
     },
 
     // Form Labels
@@ -107,7 +146,18 @@ const translations = {
         showing: { en: 'Showing', es: 'Mostrando', zh: '显示' },
         records: { en: 'records', es: 'registros', zh: '记录' },
         createdBy: { en: 'Created By', es: 'Creado Por', zh: '创建人' },
-        createdAt: { en: 'Created At', es: 'Creado En', zh: '创建时间' }
+        createdAt: { en: 'Created At', es: 'Creado En', zh: '创建时间' },
+        export: { en: 'Export to CSV', es: 'Exportar a CSV', zh: '导出为CSV' },
+        exportStartDate: { en: 'Start Date', es: 'Fecha de Inicio', zh: '开始日期' },
+        exportEndDate: { en: 'End Date', es: 'Fecha de Fin', zh: '结束日期' },
+        quickSelect: { en: 'Quick Select', es: 'Selección Rápida', zh: '快速选择' },
+        customRange: { en: 'Custom Range', es: 'Rango Personalizado', zh: '自定义范围' },
+        today: { en: 'Today', es: 'Hoy', zh: '今天' },
+        thisWeek: { en: 'This Week', es: 'Esta Semana', zh: '本周' },
+        thisMonth: { en: 'This Month', es: 'Este Mes', zh: '本月' },
+        allRecords: { en: 'All Records', es: 'Todos los Registros', zh: '所有记录' },
+        exportLanguage: { en: 'Export Language', es: 'Idioma de Exportación', zh: '导出语言' },
+        exportButton: { en: 'Export CSV', es: 'Exportar CSV', zh: '导出CSV' }
     },
 
     // Entities/Catalogs Page

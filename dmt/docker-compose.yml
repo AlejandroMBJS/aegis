@@ -22,9 +22,8 @@ services:
       context: ./dmt_backend
       dockerfile: Dockerfile
     container_name: dmt_backend
-    # No exponemos puertos al host, solo a la red interna
-    expose:
-      - "8000"
+    ports:
+      - "8001:8000"
     environment:
       # Use SQLite by default (no external database required)
       DATABASE_URL: "sqlite:///./dmt.db"
@@ -45,9 +44,8 @@ services:
       context: ./dmt_frontend
       dockerfile: Dockerfile
     container_name: dmt_frontend
-    # No exponemos puertos al host, solo a la red interna
-    expose:
-      - "8080"
+    ports:
+      - "8081:8080"
     volumes:
       # Mount source code for hot-reload during development
       - ./dmt_frontend:/app

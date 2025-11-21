@@ -9,6 +9,57 @@ let partNumbers = [];
 let workCenters = [];
 let customers = [];
 
+/**
+ * Show loading spinner
+ */
+function showLoading() {
+    const tbody = document.getElementById('records-table-body');
+    if (tbody) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="10" class="px-6 py-12 text-center">
+                    <i class="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
+                    <p class="mt-3 text-gray-600">Loading records...</p>
+                </td>
+            </tr>
+        `;
+    }
+}
+
+/**
+ * Hide loading spinner (handled by renderRecordsTable)
+ */
+function hideLoading() {
+    // No-op, as rendering will replace the loading state
+}
+
+/**
+ * Show toast notification
+ */
+function showToast(message, type = 'info') {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `fixed top-4 right-4 px-6 py-4 rounded-lg shadow-lg text-white z-50 transition-opacity ${
+        type === 'success' ? 'bg-green-600' :
+        type === 'error' ? 'bg-red-600' :
+        'bg-blue-600'
+    }`;
+    toast.innerHTML = `
+        <div class="flex items-center">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} mr-3"></i>
+            <span>${message}</span>
+        </div>
+    `;
+
+    document.body.appendChild(toast);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
     await Promise.all([
@@ -301,7 +352,7 @@ function setupEventListeners() {
 
         loadRecords(filters);
     });
-    
+
 
     // Clear filters button
     document.getElementById('clear-filters').addEventListener('click', () => {
@@ -314,4 +365,140 @@ function setupEventListeners() {
 
         loadRecords();
     });
+
+    // Export preset selector
+    document.getElementById('export-preset').addEventListener('change', (e) => {
+        handleExportPreset(e.target.value);
+    });
+
+    // Export CSV button
+    document.getElementById('export-csv').addEventListener('click', () => {
+        exportToCSV();
+    });
+}
+
+/**
+ * Handle export date preset selection
+ */
+function handleExportPreset(preset) {
+    const startDateInput = document.getElementById('export-date-start');
+    const endDateInput = document.getElementById('export-date-end');
+    const today = new Date();
+
+    switch(preset) {
+        case 'today':
+            const todayStr = today.toISOString().split('T')[0];
+            startDateInput.value = todayStr;
+            endDateInput.value = todayStr;
+            break;
+
+        case 'week':
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - today.getDay()); // Start of week (Sunday)
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6); // End of week (Saturday)
+            startDateInput.value = weekStart.toISOString().split('T')[0];
+            endDateInput.value = weekEnd.toISOString().split('T')[0];
+            break;
+
+        case 'month':
+            const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+            const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            startDateInput.value = monthStart.toISOString().split('T')[0];
+            endDateInput.value = monthEnd.toISOString().split('T')[0];
+            break;
+
+        case 'all':
+            startDateInput.value = '';
+            endDateInput.value = '';
+            break;
+
+        default: // custom
+            // Don't change the dates
+            break;
+    }
+}
+
+/**
+ * Export records to CSV
+ */
+async function exportToCSV() {
+    try {
+        const startDate = document.getElementById('export-date-start').value;
+        const endDate = document.getElementById('export-date-end').value;
+        const language = document.getElementById('export-language').value;
+
+        // Build query parameters
+        const params = new URLSearchParams();
+        if (startDate) {
+            params.append('start_date', startDate + 'T00:00:00');
+        }
+        if (endDate) {
+            params.append('end_date', endDate + 'T23:59:59');
+        }
+        params.append('language', language);
+
+        // Get the token from session
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            showToast('Authentication token not found. Please login again.', 'error');
+            return;
+        }
+
+        // Create download URL
+        const url = `${API_BASE_URL}/dmt/export/csv?${params.toString()}`;
+
+        // Show loading state
+        const exportButton = document.getElementById('export-csv');
+        const originalText = exportButton.innerHTML;
+        exportButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Exporting...';
+        exportButton.disabled = true;
+
+        // Fetch the CSV file
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Export failed: ${response.status}`);
+        }
+
+        // Get the filename from Content-Disposition header
+        const contentDisposition = response.headers.get('Content-Disposition');
+        let filename = 'dmt_records.csv';
+        if (contentDisposition) {
+            const filenameMatch = contentDisposition.match(/filename=(.+)/);
+            if (filenameMatch) {
+                filename = filenameMatch[1];
+            }
+        }
+
+        // Download the file
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(downloadUrl);
+
+        showToast('CSV exported successfully!', 'success');
+
+        // Reset button
+        exportButton.innerHTML = originalText;
+        exportButton.disabled = false;
+
+    } catch (error) {
+        console.error('Error exporting CSV:', error);
+        showToast('Error exporting CSV: ' + error.message, 'error');
+
+        // Reset button on error
+        const exportButton = document.getElementById('export-csv');
+        exportButton.innerHTML = '<i class="fas fa-file-csv mr-2"></i>Export CSV';
+        exportButton.disabled = false;
+    }
 }

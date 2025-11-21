@@ -44,11 +44,11 @@ async function login(employee_number, password) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 access_token: data.access_token,
-                employee_number: data.employee_number,
+                username: data.username, // Backend now returns 'username'
                 full_name: data.full_name,
                 role: data.role
             })
-        });
+        });;
 
 
         return { success: true };

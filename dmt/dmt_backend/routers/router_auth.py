@@ -26,7 +26,7 @@ def login(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect employee number or password",
+            detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -34,7 +34,7 @@ def login(
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={
-            "sub": user.employee_number,
+            "sub": user.username,
             "role": user.role,
             "full_name": user.full_name
         },
@@ -45,7 +45,7 @@ def login(
     return {
         "access_token": access_token,
         "token_type": "bearer",
-        "employee_number": user.employee_number,
+        "username": user.username,
         "full_name": user.full_name,
         "role": user.role
     }

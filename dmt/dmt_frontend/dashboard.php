@@ -91,6 +91,55 @@ echo "<script>
         </div>
     </div>
 
+    <!-- Export Section -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+            <i class="fas fa-download mr-2"></i><span data-i18n="dashboard.export">Export to CSV</span>
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <!-- Export Date Range -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2" data-i18n="dashboard.exportStartDate">Start Date</label>
+                <input type="date" id="export-date-start" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2" data-i18n="dashboard.exportEndDate">End Date</label>
+                <input type="date" id="export-date-end" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <!-- Quick Date Presets -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2" data-i18n="dashboard.quickSelect">Quick Select</label>
+                <select id="export-preset" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <option value="" data-i18n="dashboard.customRange">Custom Range</option>
+                    <option value="today" data-i18n="dashboard.today">Today</option>
+                    <option value="week" data-i18n="dashboard.thisWeek">This Week</option>
+                    <option value="month" data-i18n="dashboard.thisMonth">This Month</option>
+                    <option value="all" data-i18n="dashboard.allRecords">All Records</option>
+                </select>
+            </div>
+
+            <!-- Language Selection -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2" data-i18n="dashboard.exportLanguage">Export Language</label>
+                <select id="export-language" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="zh">中文</option>
+                </select>
+            </div>
+
+            <!-- Export Button -->
+            <div>
+                <button id="export-csv" class="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition">
+                    <i class="fas fa-file-csv mr-2"></i><span data-i18n="dashboard.exportButton">Export CSV</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Records Table -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="overflow-x-auto">
@@ -130,7 +179,9 @@ echo "<script>
     </div>
 </div>
 
+<script src="js/i18n.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/api.js"></script>
 <script src="js/dmt_feed.js"></script>
 
 <?php include 'includes/footer.php'; ?>

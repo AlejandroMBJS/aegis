@@ -94,7 +94,7 @@ async function loadAllCatalogs() {
             apiGet(`${API_BASE_URL}/entities/processcode`),
             apiGet(`${API_BASE_URL}/entities/disposition`),
             apiGet(`${API_BASE_URL}/entities/failurecode`),
-            apiGet(`${API_BASE_URL}/users`)
+            apiGet(`${API_BASE_URL}/users/`)
         ]);
 
         catalogs = {
@@ -146,6 +146,7 @@ function populate(id, items) {
     const sel = document.getElementById(id);
     if (!sel) return;
 
+    sel.innerHTML = ""; // Clear existing options to prevent duplicates
     items.forEach(item => {
         const opt = document.createElement("option");
         opt.value = item.id;
@@ -158,10 +159,11 @@ function populateUsers(id, users) {
     const sel = document.getElementById(id);
     if (!sel) return;
 
+    sel.innerHTML = ""; // Clear existing options to prevent duplicates
     users.forEach(user => {
         const opt = document.createElement("option");
         opt.value = user.id;
-        opt.textContent = `${user.employee_number} - ${user.full_name}`;
+        opt.textContent = `${user.username} - ${user.full_name}`;
         sel.appendChild(opt);
     });
 }
@@ -299,6 +301,7 @@ function setupFormSubmission() {
         e.preventDefault();
 
         const payload = buildPayload();
+        console.log("Submitting payload:", payload);
 
         try {
             if (isEditMode) {
@@ -313,6 +316,7 @@ function setupFormSubmission() {
 
         } catch (err) {
             console.error("Error saving record:", err);
+            console.error("Error details:", err.message);
             alert("Error saving record: " + (err.message || err));
         }
     });
@@ -330,9 +334,24 @@ function buildPayload() {
         const el = document.getElementById(id);
         if (!el) return;
 
-        if (el.type === "checkbox") p[id] = el.checked;
-        else if (el.type === "number") p[id] = Number(el.value);
-        else p[id] = el.value;
+        if (el.type === "checkbox") {
+            p[id] = el.checked;
+        } else if (el.type === "number") {
+            // Only include number if it has a value
+            if (el.value !== "") {
+                p[id] = Number(el.value);
+            }
+        } else if (el.type === "date") {
+            // Convert date to datetime format (YYYY-MM-DDTHH:MM:SS)
+            if (el.value) {
+                p[id] = el.value + "T00:00:00";
+            }
+        } else {
+            // For text fields, only include if not empty
+            if (el.value && el.value.trim() !== "") {
+                p[id] = el.value;
+            }
+        }
     });
 
     return p;

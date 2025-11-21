@@ -96,11 +96,11 @@ $pageTitle = 'Login';
         <div class="mt-6 p-4 bg-gray-50 rounded-lg">
             <p class="text-xs text-gray-600 font-semibold mb-2" data-i18n="login.demoCredentials">Demo Credentials:</p>
             <div class="text-xs text-gray-500 space-y-1">
-                <p><strong>Admin:</strong> ADM001 / admin123</p>
-                <p><strong>Inspector:</strong> INS001 / inspector123</p>
-                <p><strong>Operator:</strong> OPE001 / operator123</p>
-                <p><strong>Tech Engineer:</strong> ENG001 / engineer123</p>
-                <p><strong>Quality Engineer:</strong> QUA001 / quality123</p>
+                <p><strong>Admin:</strong> ADM001/admin123</p>
+                <p><strong>Inspector:</strong> INS001/employee123</p>
+                <p><strong>Operator:</strong> OPR001/employee123</p>
+                <p><strong>Tech Engineer:</strong> ENG001/engineer123</p>
+                <p><strong>Quality Engineer:</strong> QUA001/quality123</p>
             </div>
         </div>
     </div>

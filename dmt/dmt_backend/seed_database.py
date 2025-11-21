@@ -27,10 +27,29 @@ def create_users(session: Session):
 
     # System admin
     users.append(User(
-        employee_number="ADM001",
+        username="ADM001",
+        email="adm001@example.com",
         full_name="System Administrator",
         role="Admin",
         hashed_password=hash_password("admin123")
+    ))
+
+    # Tech Engineer
+    users.append(User(
+        username="ENG001",
+        email="eng001@example.com",
+        full_name="Technical Engineer",
+        role="Tech Engineer",
+        hashed_password=hash_password("engineer123")
+    ))
+
+    # Quality Engineer
+    users.append(User(
+        username="QUA001",
+        email="qua001@example.com",
+        full_name="Quality Engineer",
+        role="Quality Engineer",
+        hashed_password=hash_password("quality123")
     ))
 
     # Inspectors - default password: employee123
@@ -49,8 +68,10 @@ def create_users(session: Session):
     ]
 
     for idx, name in enumerate(inspector_names, start=1):
+        username = f"INS{idx:03d}"
         users.append(User(
-            employee_number=f"INS{idx:03d}",
+            username=username,
+            email=f"{username.lower()}@example.com",
             full_name=name,
             role="Inspector",
             hashed_password=hash_password("employee123")
@@ -123,8 +144,10 @@ def create_users(session: Session):
     ]
 
     for idx, name in enumerate(operator_names, start=1):
+        username = f"OPR{idx:03d}"
         users.append(User(
-            employee_number=f"OPR{idx:03d}",
+            username=username,
+            email=f"{username.lower()}@example.com",
             full_name=name,
             role="Operator",
             hashed_password=hash_password("employee123")
@@ -132,12 +155,12 @@ def create_users(session: Session):
 
     for user in users:
         # Check if user already exists
-        existing = session.query(User).filter(User.employee_number == user.employee_number).first()
+        existing = session.query(User).filter(User.username == user.username).first()
         if not existing:
             session.add(user)
-            print(f"  ✓ Created user: {user.employee_number} - {user.full_name} ({user.role})")
+            print(f"  ✓ Created user: {user.username} - {user.full_name} ({user.role})")
         else:
-            print(f"  ⚠ User already exists: {user.employee_number}")
+            print(f"  ⚠ User already exists: {user.username}")
 
     session.commit()
 
@@ -400,6 +423,8 @@ def seed_database():
         print("\nDefault Login Credentials:")
         print("-" * 60)
         print("Admin:           ADM001 / admin123")
+        print("Tech Engineer:   ENG001 / engineer123")
+        print("Quality Engineer:QUA001 / quality123")
         print("Inspectors:      INS001-INS011 / employee123")
         print("Operators:       OPR001-OPR062 / employee123")
         print("-" * 60)

@@ -50,9 +50,9 @@ def verify_token(token: str) -> Optional[TokenData]:
     """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        employee_number: str = payload.get("sub")
-        if employee_number is None:
+        username: str = payload.get("sub")
+        if username is None:
             return None
-        return TokenData(employee_number=employee_number)
+        return TokenData(username=username)
     except JWTError:
         return None

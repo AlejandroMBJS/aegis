@@ -53,6 +53,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                            class="<?php echo $currentPage === 'entities_crud.php' ? 'bg-blue-700' : 'hover:bg-blue-700'; ?> px-4 py-2 rounded transition">
                             <i class="fas fa-cog mr-2"></i><span data-i18n="nav.manageCatalogs">Manage Catalogs</span>
                         </a>
+                        <a href="manage_users.php"
+                           class="<?php echo $currentPage === 'manage_users.php' ? 'bg-blue-700' : 'hover:bg-blue-700'; ?> px-4 py-2 rounded transition">
+                            <i class="fas fa-users mr-2"></i><span data-i18n="nav.manageUsers">Manage Users</span>
+                        </a>
                         <?php endif; ?>
                     </div>
                 </div>

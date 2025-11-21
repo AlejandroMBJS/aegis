@@ -21,10 +21,15 @@ class EntityBase(SQLModel):
 # USER MODEL
 # ---------------------------------------------------
 class UserBase(SQLModel):
-    employee_number: str = Field(
+    username: str = Field(
         index=True,
         unique=True,
-        max_length=100  # FIX: MariaDB requires explicit length
+        max_length=255
+    )
+    email: str = Field(
+        index=True,
+        unique=True,
+        max_length=255
     )
     full_name: str = Field(max_length=255)
     role: str = Field(max_length=100)
