@@ -12,6 +12,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/output.css">
+    <link rel="stylesheet" href="css/professional-design.css?v=<?= time() ?>">
     <!-- Global i18n System -->
     <script src="js/i18n.js?v=<?= time() ?>"></script>
     <style>
@@ -25,8 +26,18 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             @apply bg-gray-100 cursor-not-allowed opacity-60;
         }
     </style>
+
+    <?php
+    // Inject JWT token from PHP session to localStorage
+    if (isset($_SESSION['token'])) {
+        echo "<script>
+            localStorage.setItem('access_token', '".$_SESSION['token']."');
+            localStorage.setItem('token_type', 'Bearer');
+        </script>";
+    }
+    ?>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen flex flex-col">
 
     <?php if (isAuthenticated()): ?>
     <!-- Navigation Bar -->
@@ -84,4 +95,4 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <?php endif; ?>
 
     <!-- Main Content Container -->
-    <main class="container mx-auto px-4 py-8">
+    <main class="flex-1 container mx-auto px-4 py-8">

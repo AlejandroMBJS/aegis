@@ -1,10 +1,25 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-6 mt-12">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-sm">&copy; <?php echo date('Y'); ?> DMT System. All rights reserved.</p>
-            <p class="text-xs text-gray-400 mt-2">Version 1.0.0</p>
+    <footer class="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 mt-auto shadow-inner">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-shield-alt text-blue-300"></i>
+                    <p class="text-sm font-medium">&copy; <?php echo date('Y'); ?> DMT System. All rights reserved.</p>
+                </div>
+                <div class="flex items-center space-x-4 text-xs text-blue-100">
+                    <span class="flex items-center space-x-1">
+                        <i class="fas fa-code-branch"></i>
+                        <span>Version 1.0.0</span>
+                    </span>
+                    <span class="hidden md:inline">|</span>
+                    <span class="flex items-center space-x-1">
+                        <i class="fas fa-clock"></i>
+                        <span><?php echo date('Y-m-d H:i'); ?></span>
+                    </span>
+                </div>
+            </div>
         </div>
     </footer>
 

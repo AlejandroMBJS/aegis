@@ -54,7 +54,9 @@ const translations = {
             email: { en: 'Email', es: 'Correo Electrónico', zh: '电子邮件' },
             role: { en: 'Role', es: 'Rol', zh: '角色' },
             password: { en: 'Password', es: 'Contraseña', zh: '密码' },
-            passwordHint: { en: 'Leave blank to keep current password.', es: 'Dejar en blanco para mantener la contraseña actual.', zh: '留空以保留当前密码。' }
+            passwordHint: { en: 'Leave blank to keep current password.', es: 'Dejar en blanco para mantener la contraseña actual.', zh: '留空以保留当前密码。' },
+            passwordHintEdit: { en: 'Leave blank to keep current password.', es: 'Dejar en blanco para mantener la contraseña actual.', zh: '留空以保留当前密码。' },
+            passwordHintNew: { en: 'Password is required for new users.', es: 'La contraseña es obligatoria para nuevos usuarios.', zh: '新用户必须输入密码。' }
         },
         buttons: {
             save: { en: 'Save', es: 'Guardar', zh: '保存' },
@@ -68,6 +70,9 @@ const translations = {
     roles: {
         inspector: { en: 'Inspector', es: 'Inspector', zh: '检查员' },
         admin: { en: 'Admin', es: 'Administrador', zh: '管理员' },
+        operator: { en: 'Operator', es: 'Operador', zh: '操作员' },
+        techEngineer: { en: 'Tech Engineer', es: 'Ingeniero Técnico', zh: '技术工程师' },
+        qualityEngineer: { en: 'Quality Engineer', es: 'Ingeniero de Calidad', zh: '质量工程师' },
         viewer: { en: 'Viewer', es: 'Espectador', zh: '查看者' }
     },
 
@@ -82,10 +87,14 @@ const translations = {
         processAnalysis: { en: 'Process Analysis', es: 'Análisis del Proceso', zh: '过程分析' },
         repairProcess: { en: 'Repair Process', es: 'Proceso de Reparación', zh: '修复过程' },
         engineeringFindings: { en: 'Engineering Findings', es: 'Hallazgos de Ingeniería', zh: '工程发现' },
-        reworkHours: { en: 'Rework Hours', es: 'Horas de Retrabajo', zh: '返工小时' },
+        reworkHours: { en: 'Repair/Rework Hours', es: 'Horas de Reparación/Retrabajo', zh: '修复/返工小时' },
         materialCost: { en: 'Material Scrap Cost', es: 'Costo de Material de Desecho', zh: '材料报废成本' },
-        otherCost: { en: 'Other Cost', es: 'Otro Costo', zh: '其他成本' },
-        disposition: { en: 'Final Disposition', es: 'Disposición Final', zh: '最终处置' },
+        materialScrapCost: { en: 'Material Scrap Cost ($)', es: 'Costo de Material de Desecho ($)', zh: '材料报废成本 ($)' },
+        otherCost: { en: 'Other Costs ($)', es: 'Otros Costos ($)', zh: '其他成本 ($)' },
+        disposition: { en: 'Disposition', es: 'Disposición', zh: '处置' },
+        dispositionDate: { en: 'Disposition Date', es: 'Fecha de Disposición', zh: '处置日期' },
+        dispositionApprovalDate: { en: 'Disposition Approval Date', es: 'Fecha de Aprobación de Disposición', zh: '处置批准日期' },
+        dispositionApprovedBy: { en: 'Disposition Approved By', es: 'Disposición Aprobada Por', zh: '处置批准人' },
         failureCode: { en: 'Failure Code', es: 'Código de Falla', zh: '故障代码' },
         preparedBy: { en: 'Prepared By', es: 'Preparado Por', zh: '准备人' },
         inspectionDate: { en: 'Inspection Date', es: 'Fecha de Inspección', zh: '检查日期' },
@@ -100,10 +109,31 @@ const translations = {
         calibration: { en: 'Calibration', es: 'Calibración', zh: '校准' },
         shopOrder: { en: 'Shop Order', es: 'Orden de Taller', zh: '车间订单' },
         responsible: { en: 'Responsible', es: 'Responsable', zh: '负责人' },
-        responsibleDepartment: { en: 'Responsible Department', es: 'Departamento Responsable', zh: '负责部门' }
+        responsibleDepartment: { en: 'Responsible Department', es: 'Departamento Responsable', zh: '负责部门' },
+        processDescription: { en: 'Process Description', es: 'Descripción del Proceso', zh: '过程描述' },
+        analysis: { en: 'Analysis', es: 'Análisis', zh: '分析' },
+        analysisBy: { en: 'Analysis By', es: 'Análisis Por', zh: '分析人' },
+        engineer: { en: 'Engineer', es: 'Ingeniero', zh: '工程师' },
+        engineeringRemarks: { en: 'Engineering Remarks', es: 'Observaciones de Ingeniería', zh: '工程备注' },
+        sdrNumber: { en: 'SDR Number', es: 'Número SDR', zh: 'SDR编号' },
+        closeRecord: { en: 'Close Record', es: 'Cerrar Registro', zh: '关闭记录' },
+        markAsClosed: { en: 'Mark as Closed', es: 'Marcar como Cerrado', zh: '标记为已关闭' },
+        closedWarning: { en: 'This record is closed and cannot be edited. No modifications are allowed.', es: 'Este registro está cerrado y no se puede editar. No se permiten modificaciones.', zh: '此记录已关闭，无法编辑。不允许进行修改。' }
     },
 
     // Buttons & Actions
+    buttons: {
+        save: { en: 'Save', es: 'Guardar', zh: '保存' },
+        cancel: { en: 'Cancel', es: 'Cancelar', zh: '取消' },
+        create: { en: 'Create', es: 'Crear', zh: '创建' },
+        update: { en: 'Update', es: 'Actualizar', zh: '更新' },
+        delete: { en: 'Delete', es: 'Eliminar', zh: '删除' },
+        edit: { en: 'Edit', es: 'Editar', zh: '编辑' },
+        print: { en: 'Print', es: 'Imprimir', zh: '打印' },
+        close: { en: 'Close', es: 'Cerrar', zh: '关闭' },
+        submit: { en: 'Submit', es: 'Enviar', zh: '提交' }
+    },
+
     actions: {
         save: { en: 'Save', es: 'Guardar', zh: '保存' },
         cancel: { en: 'Cancel', es: 'Cancelar', zh: '取消' },
@@ -116,11 +146,26 @@ const translations = {
         submit: { en: 'Submit', es: 'Enviar', zh: '提交' }
     },
 
+    // Form Sections
+    sections: {
+        processAnalysis: { en: 'Section 3: Process Analysis', es: 'Sección 3: Análisis de Proceso', zh: '第3节：过程分析' },
+        processAnalysisDesc: { en: 'Operators or Technical Engineer only', es: 'Solo Operadores o Ingeniero Técnico', zh: '仅限操作员或技术工程师' },
+        engineering: { en: 'Section 4: Engineering', es: 'Sección 4: Ingeniería', zh: '第4节：工程' },
+        engineeringDesc: { en: 'Technical Engineer only', es: 'Solo Ingeniero Técnico', zh: '仅限技术工程师' },
+        quality: { en: 'Section 5: Quality', es: 'Sección 5: Calidad', zh: '第5节：质量' },
+        qualityDesc: { en: 'Quality Engineer only', es: 'Solo Ingeniero de Calidad', zh: '仅限质量工程师' }
+    },
+
     // Print Formats
     print: {
+        options: { en: 'Print Options', es: 'Opciones de Impresión', zh: '打印选项' },
+        optionsDesc: { en: 'Generate and print different report formats', es: 'Generar e imprimir diferentes formatos de informe', zh: '生成并打印不同的报告格式' },
         printDMT: { en: 'Print DMT', es: 'Imprimir DMT', zh: '打印DMT' },
+        dmtDesc: { en: 'Defective Material Tag', es: 'Etiqueta de Material Defectuoso', zh: '缺陷材料标签' },
         printCAR: { en: 'Print CAR', es: 'Imprimir CAR', zh: '打印CAR' },
-        printMRB: { en: 'Print MRB', es: 'Imprimir MRB', zh: '打印MRB' }
+        carDesc: { en: 'Corrective Action Request', es: 'Solicitud de Acción Correctiva', zh: '纠正措施请求' },
+        printMRB: { en: 'Print MRB', es: 'Imprimir MRB', zh: '打印MRB' },
+        mrbDesc: { en: 'Material Review Board', es: 'Junta de Revisión de Materiales', zh: '材料审查委员会' }
     },
 
     // Status & Messages
@@ -140,6 +185,8 @@ const translations = {
         filters: { en: 'Filters', es: 'Filtros', zh: '筛选' },
         applyFilters: { en: 'Apply Filters', es: 'Aplicar Filtros', zh: '应用筛选' },
         clear: { en: 'Clear', es: 'Limpiar', zh: '清除' },
+        dateRange: { en: 'Date Range', es: 'Rango de Fechas', zh: '日期范围' },
+        exportDateRange: { en: 'Export Date Range', es: 'Rango de Fechas para Exportar', zh: '导出日期范围' },
         createdAfter: { en: 'Created After', es: 'Creado Después', zh: '创建后' },
         createdBefore: { en: 'Created Before', es: 'Creado Antes', zh: '创建前' },
         loadingRecords: { en: 'Loading records...', es: 'Cargando registros...', zh: '加载记录中...' },
@@ -322,5 +369,7 @@ if (document.readyState === 'loading') {
 window.i18n = {
     t,
     setGlobalLanguage,
-    getGlobalLanguage
+    getGlobalLanguage,
+    translatePage: updateUI,  // Alias for compatibility
+    updateUI
 };

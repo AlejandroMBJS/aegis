@@ -62,6 +62,23 @@ function showToast(message, type = 'info') {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
+    // Check if we have a token before making API calls
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        console.error('No access token found! Waiting for token injection...');
+        // Wait a bit for token injection to complete
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        const retryToken = localStorage.getItem('access_token');
+        if (!retryToken) {
+            console.error('Still no token after waiting. Redirecting to login...');
+            window.location.href = 'index.php';
+            return;
+        }
+    }
+
+    console.log('Token found, loading data...');
+
     await Promise.all([
         loadCatalogs(),
         loadRecords()
@@ -338,10 +355,14 @@ function setupEventListeners() {
             is_closed: document.getElementById('filter-status').value,
             part_number_id: document.getElementById('filter-part-number').value,
             work_center_id: document.getElementById('filter-work-center').value,
-            customer_id: document.getElementById('filter-customer').value,
-            created_after: document.getElementById('filter-date-start').value,
-            created_before: document.getElementById('filter-date-end').value
+            customer_id: document.getElementById('filter-customer').value
         };
+
+        // Add date range if selected
+        if (window.filterStartDate && window.filterEndDate) {
+            filters.created_after = window.filterStartDate.toISOString().split('T')[0];
+            filters.created_before = window.filterEndDate.toISOString().split('T')[0];
+        }
 
         // Remove empty values
         Object.keys(filters).forEach(key => {
@@ -360,8 +381,13 @@ function setupEventListeners() {
         document.getElementById('filter-part-number').value = '';
         document.getElementById('filter-work-center').value = '';
         document.getElementById('filter-customer').value = '';
-        document.getElementById('filter-date-start').value = '';
-        document.getElementById('filter-date-end').value = '';
+
+        // Clear date range picker
+        if (window.filterDateRangePicker) {
+            window.filterDateRangePicker.clear();
+        }
+        window.filterStartDate = null;
+        window.filterEndDate = null;
 
         loadRecords();
     });
@@ -379,44 +405,11 @@ function setupEventListeners() {
 
 /**
  * Handle export date preset selection
+ * (Now handled by dashboard.php inline script)
  */
 function handleExportPreset(preset) {
-    const startDateInput = document.getElementById('export-date-start');
-    const endDateInput = document.getElementById('export-date-end');
-    const today = new Date();
-
-    switch(preset) {
-        case 'today':
-            const todayStr = today.toISOString().split('T')[0];
-            startDateInput.value = todayStr;
-            endDateInput.value = todayStr;
-            break;
-
-        case 'week':
-            const weekStart = new Date(today);
-            weekStart.setDate(today.getDate() - today.getDay()); // Start of week (Sunday)
-            const weekEnd = new Date(weekStart);
-            weekEnd.setDate(weekStart.getDate() + 6); // End of week (Saturday)
-            startDateInput.value = weekStart.toISOString().split('T')[0];
-            endDateInput.value = weekEnd.toISOString().split('T')[0];
-            break;
-
-        case 'month':
-            const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-            const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            startDateInput.value = monthStart.toISOString().split('T')[0];
-            endDateInput.value = monthEnd.toISOString().split('T')[0];
-            break;
-
-        case 'all':
-            startDateInput.value = '';
-            endDateInput.value = '';
-            break;
-
-        default: // custom
-            // Don't change the dates
-            break;
-    }
+    // This function is now handled by the Flatpickr initialization in dashboard.php
+    // Kept for backwards compatibility
 }
 
 /**
@@ -424,8 +417,15 @@ function handleExportPreset(preset) {
  */
 async function exportToCSV() {
     try {
-        const startDate = document.getElementById('export-date-start').value;
-        const endDate = document.getElementById('export-date-end').value;
+        let startDate = '';
+        let endDate = '';
+
+        // Get dates from global variables set by Flatpickr
+        if (window.exportStartDate && window.exportEndDate) {
+            startDate = window.exportStartDate.toISOString().split('T')[0];
+            endDate = window.exportEndDate.toISOString().split('T')[0];
+        }
+
         const language = document.getElementById('export-language').value;
 
         // Build query parameters

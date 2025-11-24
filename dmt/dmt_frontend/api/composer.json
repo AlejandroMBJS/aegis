@@ -1,0 +1,17 @@
+{
+    "name": "dmt/backend-api",
+    "description": "DMT Backend API - Secure PHP REST API with JWT authentication",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "firebase/php-jwt": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DMT\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

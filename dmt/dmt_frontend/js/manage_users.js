@@ -21,9 +21,20 @@ document.addEventListener('DOMContentLoaded', function() {
         userForm.reset();
         document.getElementById('user-id').value = '';
         passwordInput.setAttribute('required', 'required');
-        passwordHint.textContent = 'Password is required for new users.';
-        
-        modalTitle.textContent = title;
+
+        // Set modal title with translation support
+        if (user) {
+            modalTitle.setAttribute('data-i18n', 'manageUsers.modal.editUserTitle');
+            modalTitle.textContent = 'Edit User';
+            passwordHint.setAttribute('data-i18n', 'manageUsers.form.passwordHintEdit');
+            passwordHint.textContent = 'Leave blank to keep current password.';
+        } else {
+            modalTitle.setAttribute('data-i18n', 'manageUsers.modal.addUserTitle');
+            modalTitle.textContent = 'Add New User';
+            passwordHint.setAttribute('data-i18n', 'manageUsers.form.passwordHintNew');
+            passwordHint.textContent = 'Password is required for new users.';
+        }
+
         if (user) {
             document.getElementById('user-id').value = user.id;
             document.getElementById('full_name').value = user.full_name;
@@ -31,9 +42,14 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('email').value = user.email;
             document.getElementById('role').value = user.role;
             passwordInput.removeAttribute('required');
-            passwordHint.textContent = 'Leave blank to keep current password.';
         }
+
         userModal.classList.remove('hidden');
+
+        // Re-apply translations to modal content
+        if (typeof window.i18n !== 'undefined' && typeof window.i18n.translatePage === 'function') {
+            window.i18n.translatePage();
+        }
     }
 
     function closeModal() {
@@ -77,9 +93,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const userId = formData.get('id');
         const data = Object.fromEntries(formData.entries());
 
-        // If password is empty, don't include it in the update payload
-        if (!data.password) {
-            delete data.password;
+        // For editing: if password is empty, don't include it in the update payload
+        // For creating: password is required
+        if (!data.password || data.password.trim() === '') {
+            if (userId) {
+                // Editing: remove password to keep existing one
+                delete data.password;
+            } else {
+                // Creating: password is required
+                alert('Password is required for new users');
+                return;
+            }
+        } else {
+            // Trim password to remove accidental spaces
+            data.password = data.password.trim();
         }
 
         try {

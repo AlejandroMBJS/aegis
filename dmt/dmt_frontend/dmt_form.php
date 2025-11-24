@@ -222,16 +222,16 @@ include 'includes/header.php';
         <div class="bg-white rounded-lg shadow-md p-6" id="section-process-analysis">
             <div class="border-l-4 border-green-600 pl-4 mb-6">
                 <h3 class="text-xl font-bold text-gray-800">
-                    <i class="fas fa-tools mr-2 text-green-600"></i>Section 3: Process Analysis
+                    <i class="fas fa-tools mr-2 text-green-600"></i><span data-i18n="sections.processAnalysis">Section 3: Process Analysis</span>
                 </h3>
-                <p class="text-sm text-gray-600 mt-1">Operators or Technical Engineer only</p>
+                <p class="text-sm text-gray-600 mt-1" data-i18n="sections.processAnalysisDesc">Operators or Technical Engineer only</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Process Description -->
                 <div class="md:col-span-2">
                     <label for="process_description" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Process Description
+                        <span data-i18n="form.processDescription">Process Description</span>
                     </label>
                     <textarea id="process_description" name="process_description" rows="4"
                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -241,7 +241,7 @@ include 'includes/header.php';
                 <!-- Analysis -->
                 <div class="md:col-span-2">
                     <label for="analysis" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Analysis
+                        <span data-i18n="form.analysis">Analysis</span>
                     </label>
                     <textarea id="analysis" name="analysis" rows="4"
                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -251,7 +251,7 @@ include 'includes/header.php';
                 <!-- Analysis By -->
                 <div>
                     <label for="analysis_by_id" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Analysis By
+                        <span data-i18n="form.analysisBy">Analysis By</span>
                     </label>
                     <select id="analysis_by_id" name="analysis_by_id"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
@@ -266,16 +266,16 @@ include 'includes/header.php';
         <div class="bg-white rounded-lg shadow-md p-6" id="section-engineer">
             <div class="border-l-4 border-purple-600 pl-4 mb-6">
                 <h3 class="text-xl font-bold text-gray-800">
-                    <i class="fas fa-cogs mr-2 text-purple-600"></i>Section 4: Engineering
+                    <i class="fas fa-cogs mr-2 text-purple-600"></i><span data-i18n="sections.engineering">Section 4: Engineering</span>
                 </h3>
-                <p class="text-sm text-gray-600 mt-1">Technical Engineer only</p>
+                <p class="text-sm text-gray-600 mt-1" data-i18n="sections.engineeringDesc">Technical Engineer only</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Disposition -->
                 <div>
                     <label for="final_disposition_id" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Disposition
+                        <span data-i18n="form.disposition">Disposition</span>
                     </label>
                     <select id="final_disposition_id" name="final_disposition_id"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
@@ -287,7 +287,7 @@ include 'includes/header.php';
                 <!-- DispositionDate -->
                 <div>
                     <label for="disposition_date" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Disposition Date
+                        <span data-i18n="form.dispositionDate">Disposition Date</span>
                     </label>
                     <input type="date" id="disposition_date" name="disposition_date"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
@@ -296,7 +296,7 @@ include 'includes/header.php';
                 <!-- Engineer -->
                 <div>
                     <label for="engineer_id" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Engineer
+                        <span data-i18n="form.engineer">Engineer</span>
                     </label>
                     <select id="engineer_id" name="engineer_id"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
@@ -308,7 +308,7 @@ include 'includes/header.php';
                 <!-- Failure Code -->
                 <div>
                     <label for="failure_code_id" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Failure Code
+                        <span data-i18n="form.failureCode">Failure Code</span>
                     </label>
                     <select id="failure_code_id" name="failure_code_id"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
@@ -320,7 +320,7 @@ include 'includes/header.php';
                 <!-- Repair/Rework Hours -->
                 <div>
                     <label for="rework_hours" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Repair/Rework Hours
+                        <span data-i18n="form.reworkHours">Repair/Rework Hours</span>
                     </label>
                     <input type="number" id="rework_hours" name="rework_hours" step="0.1" min="0"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -330,7 +330,7 @@ include 'includes/header.php';
                 <!-- Responsible Department -->
                 <div>
                     <label for="responsible_department" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Responsible Department
+                        <span data-i18n="form.responsibleDepartment">Responsible Department</span>
                     </label>
                     <input type="text" id="responsible_department" name="responsible_department"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -340,7 +340,7 @@ include 'includes/header.php';
                 <!-- Material Scrap Cost -->
                 <div>
                     <label for="material_scrap_cost" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Material Scrap Cost ($)
+                        <span data-i18n="form.materialScrapCost">Material Scrap Cost ($)</span>
                     </label>
                     <input type="number" id="material_scrap_cost" name="material_scrap_cost" step="0.01" min="0"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -350,7 +350,7 @@ include 'includes/header.php';
                 <!-- Other Costs -->
                 <div>
                     <label for="other_cost" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Other Costs ($)
+                        <span data-i18n="form.otherCost">Other Costs ($)</span>
                     </label>
                     <input type="number" id="other_cost" name="other_cost" step="0.01" min="0"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -360,7 +360,7 @@ include 'includes/header.php';
                 <!-- Engineering Remarks -->
                 <div class="md:col-span-2">
                     <label for="engineering_remarks" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Engineering Remarks
+                        <span data-i18n="form.engineeringRemarks">Engineering Remarks</span>
                     </label>
                     <textarea id="engineering_remarks" name="engineering_remarks" rows="4"
                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -370,7 +370,7 @@ include 'includes/header.php';
                 <!-- Repair Process -->
                 <div class="md:col-span-2">
                     <label for="repair_process" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Repair Process
+                        <span data-i18n="form.repairProcess">Repair Process</span>
                     </label>
                     <textarea id="repair_process" name="repair_process" rows="3"
                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -383,16 +383,16 @@ include 'includes/header.php';
         <div class="bg-white rounded-lg shadow-md p-6" id="section-quality">
             <div class="border-l-4 border-red-600 pl-4 mb-6">
                 <h3 class="text-xl font-bold text-gray-800">
-                    <i class="fas fa-check-circle mr-2 text-red-600"></i>Section 5: Quality
+                    <i class="fas fa-check-circle mr-2 text-red-600"></i><span data-i18n="sections.quality">Section 5: Quality</span>
                 </h3>
-                <p class="text-sm text-gray-600 mt-1">Quality Engineer only</p>
+                <p class="text-sm text-gray-600 mt-1" data-i18n="sections.qualityDesc">Quality Engineer only</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Disposition Approval Date -->
                 <div>
                     <label for="disposition_approval_date" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Disposition Approval Date
+                        <span data-i18n="form.dispositionApprovalDate">Disposition Approval Date</span>
                     </label>
                     <input type="date" id="disposition_approval_date" name="disposition_approval_date"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
@@ -401,7 +401,7 @@ include 'includes/header.php';
                 <!-- Disposition Approved By -->
                 <div>
                     <label for="disposition_approved_by_id" class="block text-sm font-semibold text-gray-700 mb-2">
-                        Disposition Approved By
+                        <span data-i18n="form.dispositionApprovedBy">Disposition Approved By</span>
                     </label>
                     <select id="disposition_approved_by_id" name="disposition_approved_by_id"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
@@ -413,23 +413,23 @@ include 'includes/header.php';
                 <!-- SDR Number -->
                 <div class="md:col-span-2">
                     <label for="sdr_number" class="block text-sm font-semibold text-gray-700 mb-2">
-                        SDR Number
+                        <span data-i18n="form.sdrNumber">SDR Number</span>
                     </label>
                     <input type="text" id="sdr_number" name="sdr_number"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                            placeholder="Enter SDR Number">
                 </div>
-                
+
                 <!-- Close Record Toggle -->
                 <div class="flex items-center" >
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            Close Record
+                            <span data-i18n="form.closeRecord">Close Record</span>
                         </label>
                         <label class="inline-flex items-center cursor-pointer">
                             <input type="checkbox" id="is_closed" name="is_closed" class="sr-only peer">
                             <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-700">Mark as Closed</span>
+                            <span class="ms-3 text-sm font-medium text-gray-700" data-i18n="form.markAsClosed">Mark as Closed</span>
                         </label>
                     </div>
                 </div>
@@ -439,7 +439,7 @@ include 'includes/header.php';
             <div id="closed-warning" class="hidden mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
                 <div class="flex items-center">
                     <i class="fas fa-exclamation-triangle text-red-600 mr-3"></i>
-                    <p class="text-sm text-red-700 font-semibold">
+                    <p class="text-sm text-red-700 font-semibold" data-i18n="form.closedWarning">
                         This record is closed and cannot be edited. No modifications are allowed.
                     </p>
                 </div>
@@ -450,9 +450,9 @@ include 'includes/header.php';
         <div id="print-buttons-section" class="hidden bg-white rounded-lg shadow-md p-6">
             <div class="border-l-4 border-green-600 pl-4 mb-4">
                 <h3 class="text-lg font-bold text-gray-800">
-                    <i class="fas fa-print mr-2 text-green-600"></i>Print Options
+                    <i class="fas fa-print mr-2 text-green-600"></i><span data-i18n="print.options">Print Options</span>
                 </h3>
-                <p class="text-sm text-gray-600 mt-1">Generate and print different report formats</p>
+                <p class="text-sm text-gray-600 mt-1" data-i18n="print.optionsDesc">Generate and print different report formats</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -460,24 +460,24 @@ include 'includes/header.php';
                 <button type="button" onclick="printDMT()"
                         class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-lg transition flex flex-col items-center justify-center space-y-2">
                     <i class="fas fa-file-alt text-3xl"></i>
-                    <span class="font-semibold">Print DMT</span>
-                    <span class="text-xs opacity-90">Defective Material Tag</span>
+                    <span class="font-semibold" data-i18n="print.printDMT">Print DMT</span>
+                    <span class="text-xs opacity-90" data-i18n="print.dmtDesc">Defective Material Tag</span>
                 </button>
 
                 <!-- CAR Print Button -->
                 <button type="button" onclick="printCAR()"
                         class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-4 rounded-lg transition flex flex-col items-center justify-center space-y-2">
                     <i class="fas fa-exclamation-triangle text-3xl"></i>
-                    <span class="font-semibold">Print CAR</span>
-                    <span class="text-xs opacity-90">Corrective Action Request</span>
+                    <span class="font-semibold" data-i18n="print.printCAR">Print CAR</span>
+                    <span class="text-xs opacity-90" data-i18n="print.carDesc">Corrective Action Request</span>
                 </button>
 
                 <!-- MRB Print Button -->
                 <button type="button" onclick="printMRB()"
                         class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-4 rounded-lg transition flex flex-col items-center justify-center space-y-2">
                     <i class="fas fa-clipboard-check text-3xl"></i>
-                    <span class="font-semibold">Print MRB</span>
-                    <span class="text-xs opacity-90">Material Review Board</span>
+                    <span class="font-semibold" data-i18n="print.printMRB">Print MRB</span>
+                    <span class="text-xs opacity-90" data-i18n="print.mrbDesc">Material Review Board</span>
                 </button>
             </div>
         </div>

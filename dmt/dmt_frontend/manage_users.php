@@ -65,9 +65,11 @@ echo "<script>
                         <div>
                             <label for="role" class="block text-sm font-medium text-gray-700" data-i18n="manageUsers.form.role">Role</label>
                             <select id="role" name="role" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
-                                <option value="Inspector" data-i18n="roles.inspector">Inspector</option>
                                 <option value="Admin" data-i18n="roles.admin">Admin</option>
-                                <option value="Viewer" data-i18n="roles.viewer">Viewer</option>
+                                <option value="Inspector" data-i18n="roles.inspector">Inspector</option>
+                                <option value="Operator" data-i18n="roles.operator">Operator</option>
+                                <option value="Tech Engineer" data-i18n="roles.techEngineer">Tech Engineer</option>
+                                <option value="Quality Engineer" data-i18n="roles.qualityEngineer">Quality Engineer</option>
                             </select>
                         </div>
                         <div>
@@ -91,6 +93,7 @@ echo "<script>
 </div>
 
 
+<script src="js/i18n.js?v=<?= time() ?>"></script>
 <script src="js/api.js"></script>
 <script src="js/manage_users.js?v=<?= time() ?>"></script>
 

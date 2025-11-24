@@ -10,9 +10,24 @@ echo "<script>
     window.API_BASE_URL = '".API_BASE_URL."';
     window.USER_ROLE = '".$currentUser['role']."';
 </script>";
+
+// Inject JWT token from PHP session to localStorage
+if (isset($_SESSION['token'])) {
+    echo "<script>
+        console.log('Injecting token from PHP session');
+        localStorage.setItem('access_token', '".$_SESSION['token']."');
+        localStorage.setItem('token_type', 'Bearer');
+        console.log('Token injected:', localStorage.getItem('access_token') ? 'SUCCESS' : 'FAILED');
+    </script>";
+} else {
+    echo "<script>
+        console.error('NO TOKEN IN PHP SESSION! Redirecting to login...');
+        window.location.href = 'index.php';
+    </script>";
+}
 ?>
 
-<div class="space-y-6 h-screen p-6 bg-gray-100">
+<div class="space-y-6 p-6 bg-gray-100">
     <!-- Page Header -->
     <div class="flex justify-between items-center">
         <div>
@@ -34,49 +49,16 @@ echo "<script>
         </h3>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Status Filter -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2" data-i18n="table.status">Status</label>
-                <select id="filter-status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="" data-i18n="status.all">All</option>
-                    <option value="false" data-i18n="status.open">Open</option>
-                    <option value="true" data-i18n="status.closed">Closed</option>
-                </select>
-            </div>
-
-            <!-- Part Number Filter -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2" data-i18n="form.partNumber">Part Number</label>
-                <select id="filter-part-number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="" data-i18n="status.all">All</option>
-                </select>
-            </div>
-
-            <!-- Work Center Filter -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2" data-i18n="form.workCenter">Work Center</label>
-                <select id="filter-work-center" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="" data-i18n="status.all">All</option>
-                </select>
-            </div>
-
-            <!-- Customer Filter -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2" data-i18n="form.customer">Customer</label>
-                <select id="filter-customer" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="" data-i18n="status.all">All</option>
-                </select>
-            </div>
-
-            <!-- Date Range Filters -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2" data-i18n="dashboard.createdAfter">Created After</label>
-                <input type="date" id="filter-date-start" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2" data-i18n="dashboard.createdBefore">Created Before</label>
-                <input type="date" id="filter-date-end" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+         
+           <!-- Date Range Filter -->
+            <div class="lg:col-span-2">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-calendar-alt mr-1"></i><span data-i18n="dashboard.dateRange">Date Range</span>
+                </label>
+                <input type="text" id="filter-date-range"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
+                       placeholder="Select date range..."
+                       readonly>
             </div>
 
             <!-- Filter Actions -->
@@ -97,16 +79,16 @@ echo "<script>
             <i class="fas fa-download mr-2"></i><span data-i18n="dashboard.export">Export to CSV</span>
         </h3>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <!-- Export Date Range -->
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2" data-i18n="dashboard.exportStartDate">Start Date</label>
-                <input type="date" id="export-date-start" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2" data-i18n="dashboard.exportEndDate">End Date</label>
-                <input type="date" id="export-date-end" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-calendar-alt mr-1"></i><span data-i18n="dashboard.exportDateRange">Export Date Range</span>
+                </label>
+                <input type="text" id="export-date-range"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white cursor-pointer"
+                       placeholder="Select date range..."
+                       readonly>
             </div>
 
             <!-- Quick Date Presets -->
@@ -179,9 +161,83 @@ echo "<script>
     </div>
 </div>
 
+<!-- Flatpickr Date Picker -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script src="js/i18n.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/api.js"></script>
 <script src="js/dmt_feed.js"></script>
+<script src="js/ux_improvements.js"></script>
+
+<script>
+// Initialize Date Range Pickers
+document.addEventListener('DOMContentLoaded', function() {
+    // Filter Date Range Picker
+    window.filterDateRangePicker = flatpickr("#filter-date-range", {
+        mode: "range",
+        dateFormat: "Y-m-d",
+        conjunction: " to ",
+        showMonths: 2,
+        theme: "material_blue",
+        onChange: function(selectedDates, dateStr, instance) {
+            if (selectedDates.length === 2) {
+                window.filterStartDate = selectedDates[0];
+                window.filterEndDate = selectedDates[1];
+            }
+        },
+        onClear: function() {
+            window.filterStartDate = null;
+            window.filterEndDate = null;
+        }
+    });
+
+    // Export Date Range Picker
+    const exportDateRange = flatpickr("#export-date-range", {
+        mode: "range",
+        dateFormat: "Y-m-d",
+        conjunction: " to ",
+        showMonths: 2,
+        theme: "material_blue",
+        defaultDate: [new Date(new Date().setDate(new Date().getDate() - 30)), new Date()],
+        onChange: function(selectedDates, dateStr, instance) {
+            if (selectedDates.length === 2) {
+                window.exportStartDate = selectedDates[0];
+                window.exportEndDate = selectedDates[1];
+            }
+        }
+    });
+
+    // Quick preset handler for export
+    document.getElementById('export-preset')?.addEventListener('change', function(e) {
+        const value = e.target.value;
+        const today = new Date();
+        let startDate, endDate;
+
+        switch(value) {
+            case 'today':
+                startDate = endDate = today;
+                break;
+            case 'week':
+                startDate = new Date(today.setDate(today.getDate() - 7));
+                endDate = new Date();
+                break;
+            case 'month':
+                startDate = new Date(today.setMonth(today.getMonth() - 1));
+                endDate = new Date();
+                break;
+            case 'all':
+                exportDateRange.clear();
+                return;
+            default:
+                return;
+        }
+
+        exportDateRange.setDate([startDate, endDate]);
+    });
+});
+</script>
 
 <?php include 'includes/footer.php'; ?>

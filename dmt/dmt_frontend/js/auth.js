@@ -12,8 +12,8 @@ const API_BASE_URL = '/api';
 async function login(employee_number, password) {
     try {
         const formData = new URLSearchParams();
-        formData.append('username', employee_number); // OAuth2 uses 'username' field
-        formData.append('password', password);
+        formData.append('username', employee_number.trim()); // OAuth2 uses 'username' field
+        formData.append('password', password.trim());
 
         const response = await fetch(`${API_BASE_URL}/auth/token`, {
             method: 'POST',
@@ -27,7 +27,7 @@ async function login(employee_number, password) {
             const error = await response.json();
             return {
                 success: false,
-                error: error.detail || 'Authentication failed'
+                error: error.detail || error.error || 'Authentication failed'
             };
         }
 
@@ -99,12 +99,27 @@ function isAuthenticated() {
 }
 
 /**
- * Logout - clear all stored data
+ * Logout - clear all stored data and destroy PHP session
  */
-function logout() {
+async function logout() {
+    console.log('Logging out...');
+
+    // Clear localStorage
     localStorage.removeItem('access_token');
     localStorage.removeItem('token_type');
     sessionStorage.removeItem('user');
+
+    // Destroy PHP session
+    try {
+        await fetch('session_logout.php', {
+            method: 'POST',
+            credentials: 'include'
+        });
+    } catch (error) {
+        console.error('Error destroying session:', error);
+    }
+
+    // Redirect to login
     window.location.href = 'index.php';
 }
 
@@ -124,7 +139,10 @@ async function apiRequest(url, options = {}) {
 
     // Handle 401 Unauthorized - token expired or invalid
     if (response.status === 401) {
-        logout();
+        if (!window.redirectingToLogin) {
+            window.redirectingToLogin = true;
+            await logout();
+        }
         return null;
     }
 

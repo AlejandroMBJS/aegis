@@ -1,0 +1,615 @@
+/**
+ * Professional Sober Design Enhancement
+ * Maintains existing color palette with refined aesthetics
+ *
+ * Color Palette:
+ * - Primary: Blue (#2563EB, #1E40AF)
+ * - Success: Green (#059669, #047857)
+ * - Danger: Red (#DC2626, #B91C1C)
+ * - Warning: Yellow (#F59E0B, #D97706)
+ * - Neutral: Gray (#374151, #6B7280, #9CA3AF, #E5E7EB, #F3F4F6)
+ */
+
+/* ============================================
+   GLOBAL IMPROVEMENTS
+   ============================================ */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.011em;
+}
+
+/* Better focus states */
+*:focus {
+    outline: 2px solid #3B82F6 !important;
+    outline-offset: 2px !important;
+}
+
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    ring-width: 2px;
+    ring-color: #3B82F6;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: #111827;
+}
+
+h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+}
+
+h2 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+p {
+    color: #6B7280;
+    line-height: 1.625;
+}
+
+/* ============================================
+   CARDS & CONTAINERS
+   ============================================ */
+
+.bg-white.rounded-lg.shadow-md {
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.2s ease;
+}
+
+.bg-white.rounded-lg.shadow-md:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Improved spacing */
+.bg-white.rounded-lg.shadow-md {
+    padding: 1.5rem;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+button,
+.btn,
+[class*="bg-blue-"],
+[class*="bg-green-"],
+[class*="bg-red-"],
+[class*="bg-gray-"] {
+    font-weight: 500;
+    letter-spacing: -0.011em;
+    transition: all 0.15s ease;
+    border: none;
+    cursor: pointer;
+}
+
+/* Primary button (blue) */
+.bg-blue-600,
+.bg-blue-700 {
+    background: linear-gradient(to bottom, #2563EB, #1E40AF);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.bg-blue-600:hover,
+.hover\:bg-blue-700:hover {
+    background: linear-gradient(to bottom, #1E40AF, #1E3A8A);
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+    transform: translateY(-1px);
+}
+
+.bg-blue-600:active,
+.bg-blue-700:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Success button (green) */
+.bg-green-600,
+.bg-green-700 {
+    background: linear-gradient(to bottom, #059669, #047857);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.bg-green-600:hover,
+.hover\:bg-green-700:hover {
+    background: linear-gradient(to bottom, #047857, #065F46);
+    box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Danger button (red) */
+.bg-red-600,
+.bg-red-700 {
+    background: linear-gradient(to bottom, #DC2626, #B91C1C);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.bg-red-600:hover,
+.hover\:bg-red-700:hover {
+    background: linear-gradient(to bottom, #B91C1C, #991B1B);
+    box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Secondary button (gray) */
+.bg-gray-500,
+.bg-gray-600 {
+    background: linear-gradient(to bottom, #6B7280, #4B5563);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.bg-gray-500:hover,
+.hover\:bg-gray-600:hover {
+    background: linear-gradient(to bottom, #4B5563, #374151);
+    box-shadow: 0 4px 6px -1px rgba(107, 114, 128, 0.3);
+    transform: translateY(-1px);
+}
+
+/* ============================================
+   FORM INPUTS
+   ============================================ */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+select,
+textarea {
+    border: 1.5px solid #D1D5DB;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    transition: all 0.15s ease;
+    background-color: #FFFFFF;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+    border-color: #9CA3AF;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+    background-color: #F9FAFB;
+    border-color: #E5E7EB;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Better placeholder styling */
+::placeholder {
+    color: #9CA3AF;
+    opacity: 1;
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+thead {
+    background: linear-gradient(to bottom, #F9FAFB, #F3F4F6);
+}
+
+thead th {
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #374151;
+    padding: 1rem 1.5rem;
+    border-bottom: 2px solid #E5E7EB;
+}
+
+tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+tbody tr:hover {
+    background-color: #F9FAFB;
+}
+
+tbody td {
+    padding: 1rem 1.5rem;
+    color: #374151;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+/* Alternating row colors (subtle) */
+tbody tr:nth-child(even) {
+    background-color: #FAFBFC;
+}
+
+tbody tr:nth-child(even):hover {
+    background-color: #F3F4F6;
+}
+
+/* ============================================
+   BADGES & STATUS INDICATORS
+   ============================================ */
+
+.badge,
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.025em;
+}
+
+.badge-open,
+.status-open {
+    background-color: #DBEAFE;
+    color: #1E40AF;
+}
+
+.badge-closed,
+.status-closed {
+    background-color: #D1FAE5;
+    color: #065F46;
+}
+
+.badge-warning {
+    background-color: #FEF3C7;
+    color: #92400E;
+}
+
+.badge-error {
+    background-color: #FEE2E2;
+    color: #991B1B;
+}
+
+/* ============================================
+   MODALS
+   ============================================ */
+
+.modal-overlay {
+    background-color: rgba(17, 24, 39, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E5E7EB;
+}
+
+/* ============================================
+   NAVIGATION & HEADER
+   ============================================ */
+
+nav,
+header {
+    border-bottom: 1px solid #E5E7EB;
+    background: linear-gradient(to bottom, #FFFFFF, #FAFBFC);
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+
+.spinner,
+.loading {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Skeleton loading */
+.skeleton {
+    background: linear-gradient(90deg, #F3F4F6 25%, #E5E7EB 50%, #F3F4F6 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* ============================================
+   TOOLTIPS
+   ============================================ */
+
+[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+[data-tooltip]::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-0.5rem);
+    padding: 0.5rem 0.75rem;
+    background-color: #1F2937;
+    color: #FFFFFF;
+    font-size: 0.75rem;
+    border-radius: 0.375rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 1000;
+}
+
+[data-tooltip]:hover::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-0.25rem);
+}
+
+/* ============================================
+   DROPDOWN MENUS
+   ============================================ */
+
+.dropdown-menu {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-item {
+    padding: 0.625rem 1rem;
+    color: #374151;
+    transition: background-color 0.15s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #F3F4F6;
+}
+
+/* ============================================
+   ICONS
+   ============================================ */
+
+i.fas,
+i.far,
+i.fab {
+    opacity: 0.85;
+}
+
+/* ============================================
+   SCROLLBARS (Webkit browsers)
+   ============================================ */
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F3F4F6;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #D1D5DB;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9CA3AF;
+}
+
+/* ============================================
+   TRANSITIONS & ANIMATIONS
+   ============================================ */
+
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   SHADOWS
+   ============================================ */
+
+.shadow-professional {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.shadow-professional-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================
+   RESPONSIVE IMPROVEMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.875rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+    }
+
+    table {
+        font-size: 0.8125rem;
+    }
+
+    thead th,
+    tbody td {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+    body {
+        background: white;
+    }
+
+    .no-print,
+    button,
+    nav,
+    header button {
+        display: none !important;
+    }
+
+    table {
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Skip to main content */
+.skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #2563EB;
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 100;
+}
+
+.skip-to-content:focus {
+    top: 0;
+}
+
+/* ============================================
+   CUSTOM ENHANCEMENTS
+   ============================================ */
+
+/* Page header enhancement */
+.page-header {
+    border-bottom: 1px solid #E5E7EB;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Filter section enhancement */
+.filter-section {
+    background: linear-gradient(to bottom, #FFFFFF, #FAFBFC);
+    border: 1px solid #E5E7EB;
+}
+
+/* Dashboard grid improvements */
+.dashboard-grid {
+    gap: 1.5rem;
+}
+
+/* Action buttons group */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Empty state */
+.empty-state {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: #6B7280;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    color: #D1D5DB;
+    margin-bottom: 1rem;
+}
+
+/* ============================================
+   DARK MODE SUPPORT (Optional)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+    /* Uncomment to enable dark mode */
+    /*
+    body {
+        background-color: #111827;
+        color: #F3F4F6;
+    }
+
+    .bg-white {
+        background-color: #1F2937;
+    }
+
+    input, select, textarea {
+        background-color: #374151;
+        border-color: #4B5563;
+        color: #F3F4F6;
+    }
+    */
+}

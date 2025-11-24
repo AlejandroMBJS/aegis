@@ -84,14 +84,15 @@ window.RBAC = {
         'material_scrap_cost',
         'other_cost',
         'engineering_remarks',
-        'repair_process'
+        'repair_process',
+        // Section 5: Quality (Tech Engineer fills these too)
+        'disposition_approval_date',
+        'disposition_approved_by_id',
+        'sdr_number'
     ],
 
     'Quality Engineer': [
-        // Section 5: Quality
-        'disposition_approval_date',
-        'disposition_approved_by_id',
-        'sdr_number',
+        // Quality Engineer can ONLY close the record, cannot edit any fields
         'is_closed'
     ]
 };
@@ -135,6 +136,8 @@ window.applySectionRBAC = function (role) {
     if (role === "Tech Engineer") {
         disableSection(inspectorSection);
         disableSection(defectDescriptionSection);
+        // Tech Engineer can edit Section 3 (Process Analysis), Section 4 (Engineering) and Section 5 (Quality)
+        // but cannot close the record
         if (closeToggle) closeToggle.disabled = true;
     }
 
@@ -143,7 +146,12 @@ window.applySectionRBAC = function (role) {
         disableSection(defectDescriptionSection);
         disableSection(processAnalysisSection);
         disableSection(engineerSection);
-        if (closeToggle) closeToggle.disabled = false;
+        disableSection(qualitySection); // Disable quality section too
+        // Only enable the close checkbox
+        if (closeToggle) {
+            closeToggle.disabled = false;
+            closeToggle.classList.remove("opacity-50", "cursor-not-allowed");
+        }
     }
 };
 

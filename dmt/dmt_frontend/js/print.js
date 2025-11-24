@@ -1,8 +1,64 @@
 /**
  * Print Module for DMT System
  * Handles three print formats: DMT, CAR, and MRB
- * Supports bilingual printing (Spanish and Chinese side-by-side)
+ * Supports trilingual printing (English, Spanish and Chinese)
  */
+
+// Add global print CSS to hide browser headers/footers and control page breaks
+if (!document.getElementById('dmt-print-styles')) {
+    const printStyles = document.createElement('style');
+    printStyles.id = 'dmt-print-styles';
+    printStyles.textContent = `
+        @page {
+            margin: 0mm;
+            size: letter portrait;
+        }
+
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* Hide everything by default */
+            body * {
+                visibility: hidden !important;
+            }
+
+            /* Show only print content */
+            #dmt-print-content,
+            #dmt-print-content *,
+            #car-print-content,
+            #car-print-content *,
+            #mrb-print-content,
+            #mrb-print-content * {
+                visibility: visible !important;
+            }
+
+            /* Position print content */
+            #dmt-print-content,
+            #car-print-content,
+            #mrb-print-content {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 5mm !important;
+                font-family: Arial, sans-serif !important;
+                font-size: 10px !important;
+                line-height: 1.3 !important;
+                background: white !important;
+            }
+        }
+    `;
+    document.head.appendChild(printStyles);
+}
 
 /**
  * Get report number (auto-increment starting from 1000)
@@ -386,122 +442,121 @@ function printDMT() {
     const defectDesc = getCurrentLanguageText('defect_description');
     const engineeringFindings = getCurrentLanguageText('engineering_findings');
 
-    // Create bilingual label helper (Chinese / Spanish)
-    const biLabel = (zh, es) => `${zh} / ${es}`;
+    // Create trilingual label helper (English / Spanish / Chinese)
+    const triLabel = (en, es, zh) => `${en} / ${es} / ${zh}`;
 
     // Create print content
     const printContent = document.createElement('div');
     printContent.id = 'dmt-print-content';
-    printContent.style.cssText = 'font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;';
+    printContent.style.cssText = 'font-family: Arial, sans-serif; padding: 8px; max-width: 750px; margin: 0 auto;';
 
     printContent.innerHTML = `
         <!-- Header -->
-        <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
-            <h1 style="margin: 0; font-size: 24px; font-weight: bold;">缺陷材料标签 (DMT)</h1>
-            <h2 style="margin: 5px 0; font-size: 20px; font-weight: bold;">ETIQUETA DE MATERIAL DEFECTUOSO</h2>
-            <p style="margin: 10px 0; font-size: 16px; font-weight: bold;">${biLabel('报告编号', 'Reporte No')}: ${getReportNumber()}</p>
+        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 12px;">
+            <h1 style="margin: 0; font-size: 18px; font-style: italic;">DEFECTIVE MATERIAL TAG (DMT) / ETIQUETA DE MATERIAL DEFECTUOSO / 缺陷材料标签</h1>
+            <p style="margin: 6px 0; font-size: 14px; font-style: italic;">${triLabel('Report No', 'Reporte No', '报告编号')}: ${getReportNumber()}</p>
         </div>
 
         <!-- Top Section: Batch No, Work Center, SN, Quantity -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; border: 2px solid #000; padding: 10px;">
-            <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('批号', 'No. de Lote')}:</strong><br>
-                <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px;"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; border: 2px solid #000; padding: 8px;">
+            <div style="border: 1px solid #666; padding: 6px;">
+                <em style="font-size: 11px;">${triLabel('Batch No', 'No. de Lote', '批号')}:</em><br>
+                <div style="border-bottom: 1px solid #000; height: 22px; margin-top: 3px;"></div>
             </div>
-            <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('工作中心', 'Centro de Trabajo')}:</strong><br>
-                <div style="margin-top: 5px; font-weight: bold;">${workCenter || '_________________________'}</div>
+            <div style="border: 1px solid #666; padding: 6px;">
+                <em style="font-size: 11px;">${triLabel('Work Center', 'Centro de Trabajo', '工作中心')}:</em><br>
+                <div style="margin-top: 3px; font-style: italic; font-size: 11px;">${workCenter || '_________________________'}</div>
             </div>
-            <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('序列号', 'NS')}:</strong><br>
-                <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px;"></div>
+            <div style="border: 1px solid #666; padding: 6px;">
+                <em style="font-size: 11px;">${triLabel('Serial No', 'NS', '序列号')}:</em><br>
+                <div style="border-bottom: 1px solid #000; height: 22px; margin-top: 3px;"></div>
             </div>
-            <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('数量', 'Cantidad')}:</strong><br>
-                <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px;"></div>
+            <div style="border: 1px solid #666; padding: 6px;">
+                <em style="font-size: 11px;">${triLabel('Quantity', 'Cantidad', '数量')}:</em><br>
+                <div style="border-bottom: 1px solid #000; height: 22px; margin-top: 3px;"></div>
             </div>
         </div>
 
         <!-- Part Number and Prepared By -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-            <div style="border: 2px solid #000; padding: 10px;">
-                <strong>${biLabel('零件编号', 'Número de Parte')}:</strong><br>
-                <div style="margin-top: 5px; font-weight: bold; font-size: 16px;">${partNumber || 'N/A'}</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+            <div style="border: 2px solid #000; padding: 8px;">
+                <em style="font-size: 11px;">${triLabel('Part Number', 'Número de Parte', '零件编号')}:</em><br>
+                <div style="margin-top: 3px; font-style: italic; font-size: 12px;">${partNumber || 'N/A'}</div>
             </div>
-            <div style="border: 2px solid #000; padding: 10px;">
-                <strong>${biLabel('准备人', 'Preparado Por')}:</strong><br>
-                <div style="margin-top: 5px; font-weight: bold;">${preparedBy || 'N/A'}</div>
+            <div style="border: 2px solid #000; padding: 8px;">
+                <em style="font-size: 11px;">${triLabel('Prepared By', 'Preparado Por', '准备人')}:</em><br>
+                <div style="margin-top: 3px; font-style: italic; font-size: 11px;">${preparedBy || 'N/A'}</div>
             </div>
         </div>
 
         <!-- DMT Date -->
-        <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong>${biLabel('DMT日期', 'Fecha DMT')}:</strong>
-            <span style="border-bottom: 1px solid #000; display: inline-block; width: 200px; margin-left: 10px;"></span>
+        <div style="border: 2px solid #000; padding: 8px; margin-bottom: 12px;">
+            <em style="font-size: 11px;">${triLabel('DMT Date', 'Fecha DMT', 'DMT日期')}:</em>
+            <span style="border-bottom: 1px solid #000; display: inline-block; width: 150px; margin-left: 5px;"></span>
         </div>
 
         <!-- Defect Description -->
-        <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('缺陷描述', 'DESCRIPCIÓN DEL DEFECTO')}:</strong><br>
-            <div style="margin-top: 10px; min-height: 80px; white-space: pre-wrap; line-height: 1.5;">${defectDesc || 'N/A'}</div>
+        <div style="border: 2px solid #000; padding: 8px; margin-bottom: 12px;">
+            <em style="font-size: 12px;">${triLabel('DEFECT DESCRIPTION', 'DESCRIPCIÓN DEL DEFECTO', '缺陷描述')}:</em><br>
+            <div style="margin-top: 6px; min-height: 60px; white-space: pre-wrap; line-height: 1.5; font-size: 11px;">${defectDesc || 'N/A'}</div>
         </div>
 
         <!-- Engineering Disposition -->
-        <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('工程处置', 'DISPOSICIÓN DE INGENIERÍA')}:</strong><br>
-            <div style="margin-top: 10px; font-weight: bold;">${finalDisposition || 'N/A'}</div>
+        <div style="border: 2px solid #000; padding: 8px; margin-bottom: 12px;">
+            <em style="font-size: 12px;">${triLabel('ENGINEERING DISPOSITION', 'DISPOSICIÓN DE INGENIERÍA', '工程处置')}:</em><br>
+            <div style="margin-top: 6px; font-style: italic; font-size: 11px;">${finalDisposition || 'N/A'}</div>
         </div>
 
         <!-- Engineering Findings -->
-        <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('工程发现', 'HALLAZGOS DE INGENIERÍA')}:</strong><br>
-            <div style="margin-top: 10px; min-height: 80px; white-space: pre-wrap; line-height: 1.5;">${engineeringFindings || 'N/A'}</div>
+        <div style="border: 2px solid #000; padding: 8px; margin-bottom: 12px;">
+            <em style="font-size: 12px;">${triLabel('ENGINEERING FINDINGS', 'HALLAZGOS DE INGENIERÍA', '工程发现')}:</em><br>
+            <div style="margin-top: 6px; min-height: 60px; white-space: pre-wrap; line-height: 1.5; font-size: 11px;">${engineeringFindings || 'N/A'}</div>
         </div>
 
         <!-- Rework Plan -->
-        <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('返工计划', 'PLAN DE RETRABAJO')}:</strong><br>
-            <div style="margin-top: 10px; min-height: 100px; border: 1px dashed #666; padding: 10px; background-color: #f9f9f9;">
+        <div style="border: 2px solid #000; padding: 8px; margin-bottom: 12px;">
+            <em style="font-size: 12px;">${triLabel('REWORK PLAN', 'PLAN DE RETRABAJO', '返工计划')}:</em><br>
+            <div style="margin-top: 6px; min-height: 70px; border: 1px dashed #666; padding: 8px; background-color: #f9f9f9;">
                 <!-- To be filled manually -->
             </div>
         </div>
 
         <!-- Signatures -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
-            <div style="border: 2px solid #000; padding: 15px;">
-                <strong>${biLabel('工程师签名', 'Firma del Ingeniero')}:</strong><br>
-                <div style="margin-top: 40px; border-bottom: 2px solid #000;"></div>
-                <div style="text-align: center; margin-top: 5px; font-size: 12px;">
-                    ${biLabel('签名/日期', 'Firma / Fecha')}
-                </div>
+        <div style="border: 2px solid #000; padding: 8px; margin-top: 12px;">
+            <div style="margin-bottom: 10px;">
+                <em style="font-size: 10px;">${triLabel('Engineer Sign', 'Firma del Ingeniero', '工程师签名')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 200px; margin-left: 5px; margin-right: 15px;"></span>
+                <em style="font-size: 10px;">${triLabel('Date', 'Fecha', '日期')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 100px; margin-left: 5px;"></span>
             </div>
-            <div style="border: 2px solid #000; padding: 15px;">
-                <strong>${biLabel('质量签名', 'Firma de Calidad')}:</strong><br>
-                <div style="margin-top: 40px; border-bottom: 2px solid #000;"></div>
-                <div style="text-align: center; margin-top: 5px; font-size: 12px;">
-                    ${biLabel('签名/日期', 'Firma / Fecha')}
-                </div>
+            <div>
+                <em style="font-size: 10px;">${triLabel('Quality Sign', 'Firma de Calidad', '质量签名')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 200px; margin-left: 5px; margin-right: 15px;"></span>
+                <em style="font-size: 10px;">${triLabel('Date', 'Fecha', '日期')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 100px; margin-left: 5px;"></span>
             </div>
         </div>
 
         <!-- Footer -->
-        <div style="margin-top: 30px; text-align: center; font-size: 10px; color: #666; border-top: 1px solid #ccc; padding-top: 10px;">
+        <div style="margin-top: 18px; text-align: center; font-size: 9px; color: #666; border-top: 1px solid #ccc; padding-top: 6px;">
             Form No: DMT-001 | Generated: ${new Date().toLocaleString()}
         </div>
     `;
 
-    // Hide the form and show print content
-    form.style.display = 'none';
+    // Add print content to body
     document.body.appendChild(printContent);
 
-    // Print
+    // Print after short delay to ensure rendering
     document.body.classList.add('print-dmt');
-    window.print();
-    cleanupPrintClasses();
+    setTimeout(() => {
+        window.print();
 
-    // Clean up
-    printContent.remove();
-    form.style.display = '';
+        // Clean up after print dialog closes
+        setTimeout(() => {
+            cleanupPrintClasses();
+            printContent.remove();
+        }, 100);
+    }, 300);
 }
 
 /**
@@ -523,8 +578,8 @@ function printCAR() {
     const repairProcess = getCurrentLanguageText('repair_process'); // Immediate corrective action
     const engineeringFindings = getCurrentLanguageText('engineering_findings'); // Preventive action
 
-    // Create bilingual label helper (Chinese / Spanish)
-    const biLabel = (zh, es) => `${zh} / ${es}`;
+    // Create trilingual label helper (English / Spanish / Chinese)
+    const triLabel = (en, es, zh) => `${en} / ${es} / ${zh}`;
 
     // Create print content
     const printContent = document.createElement('div');
@@ -534,62 +589,61 @@ function printCAR() {
     printContent.innerHTML = `
         <!-- Header -->
         <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
-            <h1 style="margin: 0; font-size: 24px; font-weight: bold;">纠正措施请求 (CAR)</h1>
-            <h2 style="margin: 5px 0; font-size: 20px; font-weight: bold;">SOLICITUD DE ACCIÓN CORRECTIVA</h2>
-            <p style="margin: 10px 0; font-size: 16px; font-weight: bold;">${biLabel('报告编号', 'Reporte No')}: ${getReportNumber()}</p>
+            <h1 style="margin: 0; font-size: 24px; font-style: italic;">CORRECTIVE ACTION REQUEST (CAR) / SOLICITUD DE ACCIÓN CORRECTIVA / 纠正措施请求</h1>
+            <p style="margin: 10px 0; font-size: 16px; font-style: italic;">${triLabel('Report No', 'Reporte No', '报告编号')}: ${getReportNumber()}</p>
         </div>
 
         <!-- Top Section: Assigned to, Issued by, Dates, MO+SN -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; border: 2px solid #000; padding: 10px;">
             <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('分配给', 'Asignado a')}:</strong><br>
+                <em>${triLabel('Assigned to', 'Asignado a', '分配给')}:</em><br>
                 <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px;"></div>
             </div>
             <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('发行人', 'Emitido por')}:</strong><br>
-                <div style="margin-top: 5px; font-weight: bold;">${preparedBy || '___________________________'}</div>
+                <em>${triLabel('Issued by', 'Emitido por', '发行人')}:</em><br>
+                <div style="margin-top: 5px; font-style: italic;">${preparedBy || '___________________________'}</div>
             </div>
             <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('发行日期', 'Fecha de emisión')}:</strong><br>
+                <em>${triLabel('Issue Date', 'Fecha de emisión', '发行日期')}:</em><br>
                 <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px;"></div>
             </div>
             <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('退回日期', 'Fecha de devolución')}:</strong><br>
+                <em>${triLabel('Return Date', 'Fecha de devolución', '退回日期')}:</em><br>
                 <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px;"></div>
             </div>
             <div style="border: 1px solid #666; padding: 8px; grid-column: span 2;">
-                <strong>${biLabel('工单+序列号', 'MO+SN')}:</strong><br>
+                <em>${triLabel('Work Order + Serial No', 'MO+SN', '工单+序列号')}:</em><br>
                 <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px;"></div>
             </div>
         </div>
 
         <!-- Defect Description -->
         <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('缺陷描述', 'DESCRIPCIÓN DEL DEFECTO')}:</strong><br>
+            <em style="font-size: 14px;">${triLabel('DEFECT DESCRIPTION', 'DESCRIPCIÓN DEL DEFECTO', '缺陷描述')}:</em><br>
             <div style="margin-top: 10px; min-height: 60px; white-space: pre-wrap; line-height: 1.5;">${defectDesc || 'N/A'}</div>
         </div>
 
         <!-- Immediate Corrective Action -->
         <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('立即纠正措施', 'ACCIÓN CORRECTIVA INMEDIATA')}:</strong><br>
+            <em style="font-size: 14px;">${triLabel('IMMEDIATE CORRECTIVE ACTION', 'ACCIÓN CORRECTIVA INMEDIATA', '立即纠正措施')}:</em><br>
             <div style="margin-top: 10px; min-height: 60px; white-space: pre-wrap; line-height: 1.5;">${repairProcess || 'N/A'}</div>
         </div>
 
         <!-- Root Cause -->
         <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('根本原因', 'CAUSA RAÍZ')}:</strong><br>
+            <em style="font-size: 14px;">${triLabel('ROOT CAUSE', 'CAUSA RAÍZ', '根本原因')}:</em><br>
             <div style="margin-top: 10px; min-height: 60px; white-space: pre-wrap; line-height: 1.5;">${processAnalysis || 'N/A'}</div>
         </div>
 
         <!-- Preventive Action -->
         <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('预防措施', 'ACCIÓN PREVENTIVA')}:</strong><br>
+            <em style="font-size: 14px;">${triLabel('PREVENTIVE ACTION', 'ACCIÓN PREVENTIVA', '预防措施')}:</em><br>
             <div style="margin-top: 10px; min-height: 60px; white-space: pre-wrap; line-height: 1.5;">${engineeringFindings || 'N/A'}</div>
         </div>
 
         <!-- Quality Follow Up -->
-        <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('质量跟进', 'SEGUIMIENTO DE CALIDAD')}:</strong><br>
+        <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px; margin-top: 80px;">
+            <em style="font-size: 14px;">${triLabel('QUALITY FOLLOW UP', 'SEGUIMIENTO DE CALIDAD', '质量跟进')}:</em><br>
             <div style="margin-top: 10px; min-height: 60px; border: 1px dashed #666; padding: 10px; background-color: #f9f9f9;">
                 <!-- To be filled manually -->
             </div>
@@ -597,7 +651,7 @@ function printCAR() {
 
         <!-- Facilitator Section -->
         <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('协调员', 'FACILITADOR')}:</strong>
+            <em style="font-size: 14px;">${triLabel('FACILITATOR', 'FACILITADOR', '协调员')}:</em>
             <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px; width: 300px;"></div>
         </div>
 
@@ -607,10 +661,10 @@ function printCAR() {
                 <thead>
                     <tr style="background-color: #f0f0f0;">
                         <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 50%;">
-                            <strong>${biLabel('日期', 'FECHA')}</strong>
+                            <em>${triLabel('DATE', 'FECHA', '日期')}</em>
                         </th>
                         <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 50%;">
-                            <strong>${biLabel('签名', 'FIRMA')}</strong>
+                            <em>${triLabel('SIGNATURE', 'FIRMA', '签名')}</em>
                         </th>
                     </tr>
                 </thead>
@@ -629,40 +683,40 @@ function printCAR() {
         <div style="border: 2px solid #000; padding: 15px; margin-bottom: 15px;">
             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 10px;">
                 <div>
-                    <strong>${biLabel('审核人发行人/ME', 'Revisado por Emisor/ME')}:</strong>
+                    <em>${triLabel('Reviewed by Issuer/ME', 'Revisado por Emisor/ME', '审核人发行人/ME')}:</em>
                     <span style="border-bottom: 1px solid #000; display: inline-block; width: 200px; margin-left: 10px;"></span>
                 </div>
                 <div>
-                    <strong>${biLabel('日期', 'Fecha')}:</strong>
+                    <em>${triLabel('Date', 'Fecha', '日期')}:</em>
                     <span style="border-bottom: 1px solid #000; display: inline-block; width: 120px; margin-left: 10px;"></span>
                 </div>
             </div>
             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 15px;">
                 <div>
-                    <strong>${biLabel('质量经理/工程师接受', 'Aceptado por QM/QE')}:</strong>
+                    <em>${triLabel('Accepted by QM/QE', 'Aceptado por QM/QE', '质量经理/工程师接受')}:</em>
                     <span style="border-bottom: 1px solid #000; display: inline-block; width: 200px; margin-left: 10px;"></span>
                 </div>
                 <div>
-                    <strong>${biLabel('日期', 'Fecha')}:</strong>
+                    <em>${triLabel('Date', 'Fecha', '日期')}:</em>
                     <span style="border-bottom: 1px solid #000; display: inline-block; width: 120px; margin-left: 10px;"></span>
                 </div>
             </div>
 
             <!-- Checkboxes -->
             <div style="margin: 15px 0; padding: 10px; background-color: #f9f9f9; border: 1px solid #ccc;">
-                <label style="margin-right: 30px; font-weight: bold;">
+                <label style="margin-right: 30px; font-style: italic;">
                     <input type="checkbox" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 8px;">
-                    ${biLabel('满意', 'Satisfactorio')}
+                    ${triLabel('Satisfactory', 'Satisfactorio', '满意')}
                 </label>
-                <label style="font-weight: bold;">
+                <label style="font-style: italic;">
                     <input type="checkbox" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 8px;">
-                    ${biLabel('不满意', 'No satisfactorio')}
+                    ${triLabel('Not Satisfactory', 'No satisfactorio', '不满意')}
                 </label>
             </div>
 
             <!-- Close CAR Date -->
             <div style="margin-top: 15px;">
-                <strong>${biLabel('关闭CAR日期', 'Fecha de cierre CAR')}:</strong>
+                <em>${triLabel('Close CAR Date', 'Fecha de cierre CAR', '关闭CAR日期')}:</em>
                 <span style="border-bottom: 1px solid #000; display: inline-block; width: 200px; margin-left: 10px;"></span>
             </div>
         </div>
@@ -673,18 +727,20 @@ function printCAR() {
         </div>
     `;
 
-    // Hide the form and show print content
-    form.style.display = 'none';
+    // Add print content to body
     document.body.appendChild(printContent);
 
-    // Print
+    // Print after short delay to ensure rendering
     document.body.classList.add('print-car');
-    window.print();
-    cleanupPrintClasses();
+    setTimeout(() => {
+        window.print();
 
-    // Clean up
-    printContent.remove();
-    form.style.display = '';
+        // Clean up after print dialog closes
+        setTimeout(() => {
+            cleanupPrintClasses();
+            printContent.remove();
+        }, 100);
+    }, 300);
 }
 
 /**
@@ -708,201 +764,236 @@ function printMRB() {
     const defectDesc = getCurrentLanguageText('defect_description');
     const engineeringComment = getCurrentLanguageText('engineering_findings');
 
-    // Create bilingual label helper (Chinese / Spanish)
-    const biLabel = (zh, es) => `${zh} / ${es}`;
+    // Create trilingual label helper (English / Spanish / Chinese)
+    const triLabel = (en, es, zh) => `${en} / ${es} / ${zh}`;
 
     // Create print content
     const printContent = document.createElement('div');
     printContent.id = 'mrb-print-content';
-    printContent.style.cssText = 'font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;';
+    printContent.style.cssText = 'font-family: Arial, sans-serif; padding: 8px; max-width: 750px; margin: 0 auto;';
 
     printContent.innerHTML = `
         <!-- Header -->
-        <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
-            <h1 style="margin: 0; font-size: 24px; font-weight: bold;">材料审查委员会报告 (MRB)</h1>
-            <h2 style="margin: 5px 0; font-size: 20px; font-weight: bold;">INFORME DE JUNTA DE REVISIÓN DE MATERIALES</h2>
-            <p style="margin: 10px 0; font-size: 16px; font-weight: bold;">${biLabel('报告编号', 'Reporte No')}: ${getReportNumber()}</p>
+        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 3px; margin-bottom: 4px;">
+            <h1 style="margin: 0; font-size: 12px; font-style: italic; line-height: 1.1;">MRB REPORT / INFORME MRB / 材料审查委员会报告</h1>
+            <p style="margin: 2px 0; font-size: 10px; font-style: italic;">${triLabel('Report No', 'Reporte No', '报告编号')}: ${getReportNumber()}</p>
         </div>
 
         <!-- Top Section: Responsible, Dept, Shop Order, SN, Quantity, Part Number -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; border: 2px solid #000; padding: 10px;">
-            <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('负责人', 'Responsable')}:</strong><br>
-                <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px;"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 4px; border: 2px solid #000; padding: 3px;">
+            <div style="border: 1px solid #666; padding: 2px;">
+                <em style="font-size: 8px;">${triLabel('Responsible', 'Responsable', '负责人')}:</em><br>
+                <div style="border-bottom: 1px solid #000; height: 12px; margin-top: 1px;"></div>
             </div>
-            <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('负责部门', 'Departamento Responsable')}:</strong><br>
-                <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px;"></div>
+            <div style="border: 1px solid #666; padding: 2px;">
+                <em style="font-size: 8px;">${triLabel('Resp Dept', 'Depto Resp', '负责部门')}:</em><br>
+                <div style="border-bottom: 1px solid #000; height: 12px; margin-top: 1px;"></div>
             </div>
-            <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('车间订单', 'Orden de taller')}:</strong><br>
-                <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px;"></div>
+            <div style="border: 1px solid #666; padding: 2px;">
+                <em style="font-size: 8px;">${triLabel('Shop Order', 'Orden', '车间订单')}:</em><br>
+                <div style="border-bottom: 1px solid #000; height: 12px; margin-top: 1px;"></div>
             </div>
-            <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('序列号', 'NS')}:</strong><br>
-                <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px;"></div>
+            <div style="border: 1px solid #666; padding: 2px;">
+                <em style="font-size: 8px;">${triLabel('Serial No', 'NS', '序列号')}:</em><br>
+                <div style="border-bottom: 1px solid #000; height: 12px; margin-top: 1px;"></div>
             </div>
-            <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('数量', 'Cantidad')}:</strong><br>
-                <div style="border-bottom: 1px solid #000; height: 25px; margin-top: 5px;"></div>
+            <div style="border: 1px solid #666; padding: 2px;">
+                <em style="font-size: 8px;">${triLabel('Quantity', 'Cantidad', '数量')}:</em><br>
+                <div style="border-bottom: 1px solid #000; height: 12px; margin-top: 1px;"></div>
             </div>
-            <div style="border: 1px solid #666; padding: 8px;">
-                <strong>${biLabel('零件编号', 'Número de Parte')}:</strong><br>
-                <div style="margin-top: 5px; font-weight: bold;">${partNumber || 'N/A'}</div>
+            <div style="border: 1px solid #666; padding: 2px;">
+                <em style="font-size: 8px;">${triLabel('Part Number', 'No. Parte', '零件编号')}:</em><br>
+                <div style="margin-top: 1px; font-style: italic; font-size: 8px;">${partNumber || 'N/A'}</div>
             </div>
         </div>
 
         <!-- DMT Date and Failure Code -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-            <div style="border: 2px solid #000; padding: 10px;">
-                <strong>${biLabel('DMT日期', 'Fecha DMT')}:</strong>
-                <span style="border-bottom: 1px solid #000; display: inline-block; width: 200px; margin-left: 10px;"></span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 4px;">
+            <div style="border: 2px solid #000; padding: 3px;">
+                <em style="font-size: 8px;">${triLabel('DMT Date', 'Fecha DMT', 'DMT日期')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 100px; margin-left: 3px;"></span>
             </div>
-            <div style="border: 2px solid #000; padding: 10px;">
-                <strong>${biLabel('故障代码', 'Código de falla')}:</strong>
-                <span style="margin-left: 10px; font-weight: bold;">${failureCode || 'N/A'}</span>
+            <div style="border: 2px solid #000; padding: 3px;">
+                <em style="font-size: 8px;">${triLabel('Failure Code', 'Código', '故障代码')}:</em>
+                <span style="margin-left: 3px; font-style: italic; font-size: 8px;">${failureCode || 'N/A'}</span>
             </div>
         </div>
 
         <!-- Defect Description -->
-        <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('缺陷描述', 'DESCRIPCIÓN DEL DEFECTO')}:</strong><br>
-            <div style="margin-top: 10px; min-height: 60px; white-space: pre-wrap; line-height: 1.5;">${defectDesc || 'N/A'}</div>
+        <div style="border: 2px solid #000; padding: 3px; margin-bottom: 4px;">
+            <em style="font-size: 9px;">${triLabel('DEFECT DESC', 'DESC DEFECTO', '缺陷描述')}:</em><br>
+            <div style="margin-top: 2px; min-height: 28px; white-space: pre-wrap; line-height: 1.2; font-size: 8px;">${defectDesc || 'N/A'}</div>
         </div>
 
         <!-- Engineering Comment -->
-        <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('工程评论', 'COMENTARIO DE INGENIERÍA')}:</strong><br>
-            <div style="margin-top: 10px; min-height: 60px; white-space: pre-wrap; line-height: 1.5;">${engineeringComment || 'N/A'}</div>
+        <div style="border: 2px solid #000; padding: 3px; margin-bottom: 4px;">
+            <em style="font-size: 9px;">${triLabel('ENG COMMENT', 'COMENT ING', '工程评论')}:</em><br>
+            <div style="margin-top: 2px; min-height: 28px; white-space: pre-wrap; line-height: 1.2; font-size: 8px;">${engineeringComment || 'N/A'}</div>
         </div>
 
         <!-- Cost Accounting -->
-        <div style="border: 2px solid #000; padding: 10px; margin-bottom: 15px;">
-            <strong style="font-size: 14px;">${biLabel('成本核算', 'CONTABILIDAD DE COSTOS')}:</strong><br>
-            <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+        <div id="mrb-cost-accounting" style="border: 2px solid #000; padding: 3px; margin-bottom: 4px;">
+            <em style="font-size: 9px;">${triLabel('COST ACCOUNTING', 'CONTABILIDAD', '成本核算')}:</em><br>
+            <div style="margin-top: 3px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
                 <div>
-                    <strong>${biLabel('材料', 'Material')}:</strong>
-                    <span style="border-bottom: 1px solid #000; display: inline-block; width: 100px; margin-left: 5px;">$${materialCost.toFixed(2)}</span>
+                    <em style="font-size: 8px;">${triLabel('Material', 'Material', '材料')}:</em>
+                    <span style="border-bottom: 1px solid #000; display: inline-block; width: 60px; margin-left: 2px; font-size: 8px;">$${materialCost.toFixed(2)}</span>
                 </div>
                 <div>
-                    <strong>${biLabel('其他', 'Otro')}:</strong>
-                    <span style="border-bottom: 1px solid #000; display: inline-block; width: 100px; margin-left: 5px;">$${otherCost.toFixed(2)}</span>
+                    <em style="font-size: 8px;">${triLabel('Other', 'Otro', '其他')}:</em>
+                    <span style="border-bottom: 1px solid #000; display: inline-block; width: 60px; margin-left: 2px; font-size: 8px;">$${otherCost.toFixed(2)}</span>
                 </div>
                 <div>
-                    <strong>${biLabel('总计', 'Total')}:</strong>
-                    <span style="border-bottom: 2px solid #000; display: inline-block; width: 100px; margin-left: 5px; font-weight: bold;">$${totalCost.toFixed(2)}</span>
+                    <em style="font-size: 8px;">${triLabel('Total', 'Total', '总计')}:</em>
+                    <span style="border-bottom: 2px solid #000; display: inline-block; width: 60px; margin-left: 2px; font-style: italic; font-size: 8px;">$${totalCost.toFixed(2)}</span>
                 </div>
             </div>
         </div>
 
         <!-- Department Assess & Engineering Assess -->
-        <div style="border: 2px solid #000; padding: 15px; margin-bottom: 15px;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
-                <div style="text-align: center; font-weight: bold; font-size: 14px; padding: 10px; background-color: #f0f0f0; border: 1px solid #000;">
-                    ${biLabel('部门评估', 'EVALUACIÓN DEL DEPARTAMENTO')}
+        <div style="border: 2px solid #000; padding: 4px; margin-bottom: 4px; margin-top: 4px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px;">
+                <div style="text-align: center; font-style: italic; font-size: 8px; padding: 2px; background-color: #f0f0f0; border: 1px solid #000;">
+                    ${triLabel('DEPT ASSESS', 'EVAL DEPTO', '部门评估')}
                 </div>
-                <div style="text-align: center; font-weight: bold; font-size: 14px; padding: 10px; background-color: #f0f0f0; border: 1px solid #000;">
-                    ${biLabel('工程评估', 'EVALUACIÓN DE INGENIERÍA')}
+                <div style="text-align: center; font-style: italic; font-size: 8px; padding: 2px; background-color: #f0f0f0; border: 1px solid #000;">
+                    ${triLabel('ENG ASSESS', 'EVAL ING', '工程评估')}
                 </div>
             </div>
 
             <!-- Row 1: ME -->
-            <div style="display: grid; grid-template-columns: 80px 1fr 2fr; gap: 10px; margin-bottom: 10px; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
-                <div style="font-weight: bold;">ME:</div>
-                <div>
-                    <label style="margin-right: 10px;"><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> ${biLabel('使用', 'Usar')}</label>
-                    <label style="margin-right: 10px;"><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> ${biLabel('返工', 'Retrabajo')}</label>
-                    <label style="margin-right: 10px;"><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> ${biLabel('报废', 'Desecho')}</label>
-                    <label><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> SDR</label>
+            <div style="display: grid; grid-template-columns: 30px 2fr 3fr; gap: 3px; margin-bottom: 3px; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 2px;">
+                <div style="font-style: italic; font-size: 8px;">ME:</div>
+                <div style="font-size: 7px;">
+                    <label style="margin-right: 3px;"><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> ${triLabel('Use', 'Usar', '使用')}</label>
+                    <label style="margin-right: 3px;"><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> ${triLabel('Rework', 'Retrab', '返工')}</label>
+                    <label style="margin-right: 3px;"><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> ${triLabel('Scrap', 'Desecho', '报废')}</label>
+                    <label><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> SDR</label>
                 </div>
-                <div style="border-bottom: 1px solid #000; height: 25px;"></div>
+                <div style="border-bottom: 1px solid #000; height: 12px;"></div>
             </div>
 
             <!-- Row 2: QE -->
-            <div style="display: grid; grid-template-columns: 80px 1fr 2fr; gap: 10px; margin-bottom: 10px; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
-                <div style="font-weight: bold;">QE:</div>
-                <div>
-                    <label style="margin-right: 10px;"><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> ${biLabel('返工', 'Retrabajo')}</label>
-                    <label style="margin-right: 10px;"><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> ${biLabel('报废', 'Desecho')}</label>
-                    <label><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> SDR</label>
+            <div style="display: grid; grid-template-columns: 30px 2fr 3fr; gap: 3px; margin-bottom: 3px; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 2px;">
+                <div style="font-style: italic; font-size: 8px;">QE:</div>
+                <div style="font-size: 7px;">
+                    <label style="margin-right: 3px;"><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> ${triLabel('Rework', 'Retrab', '返工')}</label>
+                    <label style="margin-right: 3px;"><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> ${triLabel('Scrap', 'Desecho', '报废')}</label>
+                    <label><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> SDR</label>
                 </div>
-                <div style="border-bottom: 1px solid #000; height: 25px;"></div>
+                <div style="border-bottom: 1px solid #000; height: 12px;"></div>
             </div>
 
             <!-- Row 3: MFG -->
-            <div style="display: grid; grid-template-columns: 80px 1fr 2fr; gap: 10px; margin-bottom: 10px; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
-                <div style="font-weight: bold;">MFG:</div>
-                <div>
-                    <label style="margin-right: 10px;"><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> ${biLabel('返工', 'Retrabajo')}</label>
-                    <label style="margin-right: 10px;"><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> ${biLabel('报废', 'Desecho')}</label>
-                    <label><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> SDR</label>
+            <div style="display: grid; grid-template-columns: 30px 2fr 3fr; gap: 3px; margin-bottom: 3px; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 2px;">
+                <div style="font-style: italic; font-size: 8px;">MFG:</div>
+                <div style="font-size: 7px;">
+                    <label style="margin-right: 3px;"><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> ${triLabel('Rework', 'Retrab', '返工')}</label>
+                    <label style="margin-right: 3px;"><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> ${triLabel('Scrap', 'Desecho', '报废')}</label>
+                    <label><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> SDR</label>
                 </div>
-                <div style="border-bottom: 1px solid #000; height: 25px;"></div>
+                <div style="border-bottom: 1px solid #000; height: 12px;"></div>
             </div>
 
             <!-- Row 4: EM -->
-            <div style="display: grid; grid-template-columns: 80px 1fr 2fr; gap: 10px; margin-bottom: 10px; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
-                <div style="font-weight: bold;">EM:</div>
-                <div>
-                    <label style="margin-right: 10px;"><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> ${biLabel('返工', 'Retrabajo')}</label>
-                    <label style="margin-right: 10px;"><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> ${biLabel('报废', 'Desecho')}</label>
-                    <label><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> SDR</label>
+            <div style="display: grid; grid-template-columns: 30px 2fr 3fr; gap: 3px; margin-bottom: 3px; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 2px;">
+                <div style="font-style: italic; font-size: 8px;">EM:</div>
+                <div style="font-size: 7px;">
+                    <label style="margin-right: 3px;"><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> ${triLabel('Rework', 'Retrab', '返工')}</label>
+                    <label style="margin-right: 3px;"><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> ${triLabel('Scrap', 'Desecho', '报废')}</label>
+                    <label><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> SDR</label>
                 </div>
-                <div style="border-bottom: 1px solid #000; height: 25px;"></div>
+                <div style="border-bottom: 1px solid #000; height: 12px;"></div>
             </div>
 
             <!-- Row 5: QM -->
-            <div style="display: grid; grid-template-columns: 80px 1fr 2fr; gap: 10px; margin-bottom: 15px; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
-                <div style="font-weight: bold;">QM:</div>
-                <div>
-                    <label style="margin-right: 10px;"><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> ${biLabel('返工', 'Retrabajo')}</label>
-                    <label style="margin-right: 10px;"><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> ${biLabel('报废', 'Desecho')}</label>
-                    <label><input type="checkbox" style="width: 16px; height: 16px; margin-right: 3px;"> SDR</label>
+            <div style="display: grid; grid-template-columns: 30px 2fr 3fr; gap: 3px; margin-bottom: 4px; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 2px;">
+                <div style="font-style: italic; font-size: 8px;">QM:</div>
+                <div style="font-size: 7px;">
+                    <label style="margin-right: 3px;"><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> ${triLabel('Rework', 'Retrab', '返工')}</label>
+                    <label style="margin-right: 3px;"><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> ${triLabel('Scrap', 'Desecho', '报废')}</label>
+                    <label><input type="checkbox" style="width: 10px; height: 10px; margin-right: 1px;"> SDR</label>
                 </div>
-                <div style="border-bottom: 1px solid #000; height: 25px;"></div>
+                <div style="border-bottom: 1px solid #000; height: 12px;"></div>
             </div>
 
             <!-- Verdict Box -->
-            <div style="margin-top: 20px;">
-                <strong style="font-size: 14px;">${biLabel('判定', 'VEREDICTO')}:</strong>
-                <div style="margin-top: 10px; min-height: 100px; border: 2px solid #000; padding: 10px; background-color: #f9f9f9;">
+            <div style="margin-top: 5px;">
+                <em style="font-size: 9px;">${triLabel('VERDICT', 'VEREDICTO', '判定')}:</em>
+                <div style="margin-top: 3px; min-height: 40px; border: 2px solid #000; padding: 4px; background-color: #f9f9f9;">
                     <!-- To be filled manually -->
                 </div>
             </div>
 
-            <!-- Signature -->
-            <div style="margin-top: 30px; border-top: 2px solid #000; padding-top: 20px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div style="text-align: center;">
-                        <div style="border-bottom: 2px solid #000; margin-bottom: 5px; height: 40px;"></div>
-                        <strong>${biLabel('签名', 'Firma')}</strong>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="border-bottom: 2px solid #000; margin-bottom: 5px; height: 40px;"></div>
-                        <strong>${biLabel('日期', 'Fecha')}</strong>
-                    </div>
-                </div>
+        </div>
+
+        <!-- Management Signatures -->
+        <div style="border: 2px solid #000; padding: 3px; margin-top: 4px; margin-bottom: 4px;">
+            <div style="text-align: center; font-style: italic; font-size: 8px; padding: 2px; background-color: #f0f0f0; border-bottom: 1px solid #000; margin-bottom: 3px;">
+                ${triLabel('MANAGEMENT SIGNATURES', 'FIRMAS DE GESTIÓN', '管理层签名')}
+            </div>
+
+            <!-- ME -->
+            <div style="margin-bottom: 2px; font-size: 7px;">
+                <em>${triLabel('Mechanical Engineer (ME)', 'Ingeniero Mecánico (ME)', '机械工程师 (ME)')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 140px; margin-left: 3px; margin-right: 10px;"></span>
+                <em>${triLabel('Date', 'Fecha', '日期')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 70px; margin-left: 3px;"></span>
+            </div>
+
+            <!-- QE -->
+            <div style="margin-bottom: 2px; font-size: 7px;">
+                <em>${triLabel('Quality Engineer (QE)', 'Ingeniero de Calidad (QE)', '质量工程师 (QE)')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 140px; margin-left: 3px; margin-right: 10px;"></span>
+                <em>${triLabel('Date', 'Fecha', '日期')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 70px; margin-left: 3px;"></span>
+            </div>
+
+            <!-- QM -->
+            <div style="margin-bottom: 2px; font-size: 7px;">
+                <em>${triLabel('Quality Manager (QM)', 'Gerente de Calidad (QM)', '质量经理 (QM)')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 140px; margin-left: 3px; margin-right: 10px;"></span>
+                <em>${triLabel('Date', 'Fecha', '日期')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 70px; margin-left: 3px;"></span>
+            </div>
+
+            <!-- EM -->
+            <div style="margin-bottom: 2px; font-size: 7px;">
+                <em>${triLabel('Engineering Manager', 'Gerente de Ingeniería', '工程经理')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 140px; margin-left: 3px; margin-right: 10px;"></span>
+                <em>${triLabel('Date', 'Fecha', '日期')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 70px; margin-left: 3px;"></span>
+            </div>
+
+            <!-- PM -->
+            <div style="margin-bottom: 0; font-size: 7px;">
+                <em>${triLabel('Production Manager', 'Gerente de Producción', '生产经理')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 140px; margin-left: 3px; margin-right: 10px;"></span>
+                <em>${triLabel('Date', 'Fecha', '日期')}:</em>
+                <span style="border-bottom: 1px solid #000; display: inline-block; width: 70px; margin-left: 3px;"></span>
             </div>
         </div>
 
         <!-- Footer -->
-        <div style="margin-top: 30px; text-align: center; font-size: 10px; color: #666; border-top: 1px solid #ccc; padding-top: 10px;">
+        <div style="margin-top: 6px; text-align: center; font-size: 7px; color: #666; border-top: 1px solid #ccc; padding-top: 3px;">
             Form No: MRB-001 | Generated: ${new Date().toLocaleString()}
         </div>
     `;
 
-    // Hide the form and show print content
-    form.style.display = 'none';
+    // Add print content to body
     document.body.appendChild(printContent);
 
-    // Print
+    // Print after short delay to ensure rendering
     document.body.classList.add('print-mrb');
-    window.print();
-    cleanupPrintClasses();
+    setTimeout(() => {
+        window.print();
 
-    // Clean up
-    printContent.remove();
-    form.style.display = '';
+        // Clean up after print dialog closes
+        setTimeout(() => {
+            cleanupPrintClasses();
+            printContent.remove();
+        }, 100);
+    }, 300);
 }
 
 /**

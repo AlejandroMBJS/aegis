@@ -5,23 +5,57 @@ const API_BASE_URL = '/api';
 class API {
     constructor(apiToken) {
         this.apiToken = apiToken;
-        this.headers = {
-            "Authorization": `Bearer ${this.apiToken}`,
+    }
+
+    _getHeaders() {
+        // Always get fresh token from localStorage
+        const token = localStorage.getItem('access_token') || this.apiToken;
+        return {
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
         };
     }
 
     async _fetch(url, options) {
-        const response = await fetch(url, { ...options, headers: this.headers });
-        
+        const token = localStorage.getItem('access_token');
+
+        // Debug logging
+        if (!token) {
+            console.error('No access token found in localStorage');
+        }
+
+        const response = await fetch(url, { ...options, headers: this._getHeaders() });
+
         // Handle 401 Unauthorized - token expired or invalid
         if (response.status === 401) {
-            // Assuming logout() is a global function or accessible
-            if (typeof logout === 'function') {
-                logout();
-            } else {
-                console.error('logout() function not found. Redirecting manually.');
-                window.location.href = 'index.php';
+            console.error('API returned 401 Unauthorized for:', url);
+            console.error('Token in localStorage:', token ? 'exists' : 'missing');
+
+            // Prevent redirect loop - only redirect once per page load
+            if (!window.redirectingToLogin) {
+                window.redirectingToLogin = true;
+
+                console.log('Token expired or invalid. Logging out...');
+
+                if (typeof logout === 'function') {
+                    await logout();
+                } else {
+                    // Fallback: clear everything and redirect
+                    console.error('logout() function not found. Clearing manually.');
+                    localStorage.removeItem('access_token');
+                    localStorage.removeItem('token_type');
+
+                    try {
+                        await fetch('session_logout.php', {
+                            method: 'POST',
+                            credentials: 'include'
+                        });
+                    } catch (e) {
+                        console.error('Error destroying session:', e);
+                    }
+
+                    window.location.href = 'index.php';
+                }
             }
             throw new Error('Authentication expired. Please login again.');
         }
@@ -83,84 +117,25 @@ class API {
         return response.json();
     }
 
-    // User Management Methods - Using direct fetch to /users/ (not under /api)
+    // User Management Methods
     async getUsers() {
-        const response = await fetch('/users/', { headers: this.headers });
-        if (response.status === 401) {
-            if (typeof logout === 'function') logout();
-            throw new Error('Authentication expired. Please login again.');
-        }
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: `API error: ${response.status}` }));
-            throw new Error(errorData.detail || errorData.message || `API error: ${response.status}`);
-        }
-        return response.json();
+        return this.get('/users/');
     }
 
     async getUser(userId) {
-        const response = await fetch(`/users/${userId}`, { headers: this.headers });
-        if (response.status === 401) {
-            if (typeof logout === 'function') logout();
-            throw new Error('Authentication expired. Please login again.');
-        }
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: `API error: ${response.status}` }));
-            throw new Error(errorData.detail || errorData.message || `API error: ${response.status}`);
-        }
-        return response.json();
+        return this.get(`/users/${userId}`);
     }
 
     async createUser(userData) {
-        const response = await fetch('/users/', {
-            method: "POST",
-            headers: this.headers,
-            body: JSON.stringify(userData)
-        });
-        if (response.status === 401) {
-            if (typeof logout === 'function') logout();
-            throw new Error('Authentication expired. Please login again.');
-        }
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: `API error: ${response.status}` }));
-            throw new Error(errorData.detail || errorData.message || `API error: ${response.status}`);
-        }
-        return response.json();
+        return this.post('/users', userData);
     }
 
     async updateUser(userId, userData) {
-        const response = await fetch(`/users/${userId}`, {
-            method: "PUT",
-            headers: this.headers,
-            body: JSON.stringify(userData)
-        });
-        if (response.status === 401) {
-            if (typeof logout === 'function') logout();
-            throw new Error('Authentication expired. Please login again.');
-        }
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: `API error: ${response.status}` }));
-            throw new Error(errorData.detail || errorData.message || `API error: ${response.status}`);
-        }
-        return response.json();
+        return this.put(`/users/${userId}`, userData);
     }
 
     async deleteUser(userId) {
-        const response = await fetch(`/users/${userId}`, {
-            method: "DELETE",
-            headers: this.headers
-        });
-        if (response.status === 401) {
-            if (typeof logout === 'function') logout();
-            throw new Error('Authentication expired. Please login again.');
-        }
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: `API error: ${response.status}` }));
-            throw new Error(errorData.detail || `API error: ${response.status}`);
-        }
-        if (response.status === 204) {
-            return null;
-        }
-        return response.json();
+        return this.delete(`/users/${userId}`);
     }
     
     // Catalog methods
